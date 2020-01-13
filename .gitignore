@@ -1,0 +1,7 @@
+.idea/artifacts
+.idea/modules
+.idea/$PRODUCT_WORKSPACE_FILE$
+.idea/*.xml
+
+.gradle/
+build/
