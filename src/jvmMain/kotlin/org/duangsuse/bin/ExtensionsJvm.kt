@@ -5,7 +5,7 @@ import java.io.OutputStream
 import java.io.File
 import java.net.URL
 
-fun InputStream.byteReader(mark_size: Cnt = 0): InStreamByteReader = InStreamByteReader(this)
+fun InputStream.byteReader(mark_size: Cnt = 0): InStreamByteReader = InStreamByteReader(this, mark_size)
 fun OutputStream.byteWriter(): OutStreamByteWriter = OutStreamByteWriter(this)
 fun File.byteReader(): InStreamByteReader = inputStream().byteReader()
 fun File.byteWriter(): OutStreamByteWriter = outputStream().byteWriter()
