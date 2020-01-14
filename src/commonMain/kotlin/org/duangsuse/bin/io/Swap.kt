@@ -16,5 +16,5 @@ internal val i32And: ByteSelect<Int32> = { si -> and(si).toByte() }
 internal val i64And: ByteSelect<Int64> = { sl -> and(sl).toByte() }
 
 internal val i16Or: ByteUnion<Int16> = { b -> toInt().or(b.toInt()).toShort() }
-internal val i32Or: ByteUnion<Int32> = { b -> and(b.toInt()) }
-internal val i64Or: ByteUnion<Int64> = { b -> and(b.toLong()) }
+internal val i32Or: ByteUnion<Int32> = { b -> or(b.toInt()) }
+internal val i64Or: ByteUnion<Int64> = { b -> or(b.toLong()) }
