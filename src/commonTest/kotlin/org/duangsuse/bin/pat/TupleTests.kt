@@ -1,7 +1,6 @@
 package org.duangsuse.bin.pat
 
 import org.duangsuse.bin.Cnt
-import org.duangsuse.bin.indices
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

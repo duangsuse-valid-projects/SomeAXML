@@ -27,7 +27,7 @@ expect interface Closeable {
 expect interface Flushable {
   fun flush()
 }
-interface ReadControl: MarkReset, Closeable, Estimable {
+interface ReadControl: Estimable, MarkReset, Closeable {
   val position: Cnt
 }
 interface WriteControl: Flushable, Closeable

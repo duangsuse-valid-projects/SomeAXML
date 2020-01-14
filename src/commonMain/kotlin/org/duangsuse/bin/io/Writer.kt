@@ -19,9 +19,8 @@ class Writer(private val w: ByteWriter): org.duangsuse.bin.Writer {
      i: I) {
     val bytes = integralToBytes(n, byte_left, shl, and, i)
     if (shouldSwap) {
-      val buffer = bytes.toArray(n)
-      buffer.reverse()
-      for (b in buffer) writeInt8(b)
+      val revBuffer = bytes.toArray(n); revBuffer.reverse()
+      for (b in revBuffer) writeInt8(b)
     } else {
       for (b in bytes) writeInt8(b)
     }
