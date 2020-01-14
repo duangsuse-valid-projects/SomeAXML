@@ -10,18 +10,19 @@ interface Pattern<T> {
 }
 
 /** Sequential binary pattern like C's `struct` */
-class Seq<T>(private val allocator: Allocator<T>, private vararg val items: Pattern<T>): Pattern.Sized<Tuple<T>> {
-  override fun read(s: Reader): Tuple<T> {
+class Seq<TUP: Tuple<T>, T>(private val allocator: Allocator<TUP>, private vararg val items: Pattern<T>): Pattern.Sized<TUP> {
+  constructor(creator: Producer<TUP>, vararg items: Pattern<T>): this({ _ -> creator() }, *items)
+  override fun read(s: Reader): TUP {
     val result = allocator(items.size)
     for ((index, item) in items.withIndex()) result[index] = item.read(s)
     return result
   }
-  override fun write(s: Writer, x: Tuple<T>) {
+  override fun write(s: Writer, x: TUP) {
     for ((index, item) in items.withIndex()) item.write(s, x[index])
   }
   override val size: Cnt?
     get() = items.toList()
-      .takeIfAllIsInstance<Pattern.Sized<T>>()
+      .takeIfAllIsInstance<Pattern.Sized<TUP>>()
       ?.mapTakeIfAllNotNull(OptionalSized::size)
       ?.sum()
 }

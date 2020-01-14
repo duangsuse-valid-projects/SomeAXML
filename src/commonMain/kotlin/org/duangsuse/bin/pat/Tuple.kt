@@ -6,8 +6,8 @@ import org.duangsuse.bin.Sized
 import org.duangsuse.bin.indices
 import kotlin.reflect.KProperty
 
-/** Creates a [Tuple] with given size */
-typealias Allocator<T> = (Cnt) -> Tuple<T>
+/** Creates an object like [Tuple] with given size */
+typealias Allocator<T> = (Cnt) -> T
 
 /** Tuple is an array-like object with `val (x0, x1) = (tup)` destruct and index access support
  *
@@ -27,6 +27,15 @@ abstract class Tuple<E>(override val size: Cnt): Sized {
     operator fun getValue(self: Tuple<out T>, _p: KProperty<*>): T = self[idx]
     operator fun setValue(self: Tuple<in T>, _p: KProperty<*>, value: T) { self[idx] = value }
   }
+
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    return if (other == null || other !is Tuple<*>) false
+    else (size == other.size) && items.contentEquals(other.items)
+  }
+  override fun hashCode(): Int  = 31 * size + items.contentHashCode()
+  override fun toString(): String = "(${describe()})"
+  private fun describe(): String = items.joinToString(", ")
 }
 operator fun <E> Tuple<E>.component1() = this[0]
 operator fun <E> Tuple<E>.component2() = this[1]
