@@ -1,5 +1,6 @@
 package org.duangsuse.bin
 
+import org.duangsuse.bin.io.assertArrayEquals
 import org.junit.Test
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
@@ -53,6 +54,3 @@ class OutStreamByteWriterTests {
   }
   // close, flush, writeFrom omitted
 }
-
-internal fun <E> assertArrayEquals(expected: Array<E>, actual: Array<E>) = assertEquals(expected.toList(), actual.toList())
-internal fun assertArrayEquals(expected: ByteArray, actual: ByteArray) = assertArrayEquals(expected.toTypedArray(), actual.toTypedArray())

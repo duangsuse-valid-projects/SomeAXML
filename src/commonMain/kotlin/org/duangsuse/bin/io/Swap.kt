@@ -15,6 +15,11 @@ internal val i16And: Nat8Select<Int16> = { ss -> toInt().and(ss.toInt()) }
 internal val i32And: Nat8Select<Int32> = { si -> and(si) }
 internal val i64And: Nat8Select<Int64> = { sl -> and(sl).toInt() }
 
+// leftmost byte selector
+internal val i16Select: Nat8Select<Int16> = { ss -> toInt().and(ss.toInt()).ushr(Int16.SIZE_BITS-Byte.SIZE_BITS) }
+internal val i32Select: Nat8Select<Int32> = { si -> and(si).ushr(Int32.SIZE_BITS-Byte.SIZE_BITS) }
+internal val i64Select: Nat8Select<Int64> = { sl -> and(sl).ushr(Int64.SIZE_BITS-Byte.SIZE_BITS).toInt() }
+
 internal val i16Or: Nat8Union<Int16> = { b -> toInt().or(b).toShort() }
 internal val i32Or: Nat8Union<Int32> = { b -> or(b) }
 internal val i64Or: Nat8Union<Int64> = { b -> or(b.toLong()) }

@@ -7,9 +7,9 @@ class Writer(private val w: Nat8Writer): org.duangsuse.bin.Writer {
   override fun writeNat8(x: Nat8) = w.write(x)
 
   override fun writeInt8(x: Int8) = w.write(x.toInt())
-  override fun writeInt16(x: Int16) = write(Int16.SIZE_BYTES, (-0x7f00).toShort(), i16Shl, i16And, x)
-  override fun writeInt32(x: Int32) = write(Int32.SIZE_BYTES, (-0x7f00_0000), Int32::shl, i32And, x)
-  override fun writeInt64(x: Int64) = write(Int64.SIZE_BYTES, (-0x7f00_0000_0000_0000L), Int64::shl, i64And, x)
+  override fun writeInt16(x: Int16) = write(Int16.SIZE_BYTES, (-0x0100).toShort(), i16Shl, i16Select, x)
+  override fun writeInt32(x: Int32) = write(Int32.SIZE_BYTES, (-0x0100_0000), Int32::shl, i32Select, x)
+  override fun writeInt64(x: Int64) = write(Int64.SIZE_BYTES, (-0x0100_0000_0000_0000L), Int64::shl, i64Select, x)
 
   override fun writeRat32(x: Rat32) = writeInt32(x.toBits())
   override fun writeRat64(x: Rat64) = writeInt64(x.toBits())

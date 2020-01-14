@@ -31,6 +31,12 @@ fun ReadControl.makeAligned(n: Cnt) {
   val chunkPosition = (position % n)
   if (chunkPosition != 0) skip(n - chunkPosition)
 }
+fun DataWriter.writePadding(n: Cnt, x: Nat8 = 0x00) {
+  repeat(n) { writeNat8(x) }
+}
+fun Nat8Writer.writePadding(n: Cnt, x: Nat8 = 0x00) {
+  repeat(n) { write(x) }
+}
 
 fun ByteOrdered.makeBigEndian() { byteOrder = ByteOrder.BigEndian }
 fun ByteOrdered.makeLittleEndian() { byteOrder = ByteOrder.LittleEndian }
