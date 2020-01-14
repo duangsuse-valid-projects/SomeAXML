@@ -27,6 +27,7 @@ expect interface Closeable {
 expect interface Flushable {
   fun flush()
 }
+expect class StreamEnd(): Exception
 interface ReadControl: Estimable, MarkReset, Closeable {
   val position: Cnt
 }

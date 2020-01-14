@@ -20,7 +20,11 @@ fun Nat8Reader.takeByte(n: Cnt): Buffer {
 }
 fun Nat8Reader.takeNat8(n: Cnt): IntArray {
   val buffer = IntArray(n)
-  for (i in (0 untilSize n)) buffer[i] = read()
+  for (i in (0 untilSize n)) {
+    val byte = read()
+    if (byte == (-1)) throw StreamEnd()
+    else buffer[i] = byte
+  }
   return buffer
 }
 fun Reader.makeAligned(n: Cnt) {
