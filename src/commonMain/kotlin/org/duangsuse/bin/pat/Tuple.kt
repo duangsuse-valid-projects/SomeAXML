@@ -20,6 +20,7 @@ abstract class Tuple<E>(override val size: Cnt): Sized {
   protected abstract val items: Array<E>
   operator fun get(index: Idx) = items[index]
   operator fun set(index: Idx, value: E) { items[index] = value }
+  fun toArray(): Array<E> = items
 
   protected fun <T> index(idx: Idx) = Index<T>(idx)
   class Index<T>(private val idx: Idx) {

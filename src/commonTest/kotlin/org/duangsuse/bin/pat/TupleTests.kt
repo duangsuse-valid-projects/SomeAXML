@@ -11,12 +11,12 @@ class TupleTests {
     var snd: Int by index(1)
     var trd: Int by index(2)
   }
+  class IntTriple: IntTuple(3)
   @Test fun index() {
     val tup = IntTuple(3)
     tup[0] = 9; tup[1] = 9; tup[2] = 6
     assertEquals(listOf(9, 9, 6), tup.toList())
   }
-  class IntTriple: IntTuple(3)
   @Test fun valueDelegate() {
     val tup = IntTriple()
     tup.fst = 6; tup.snd = 2; tup.trd = 1
