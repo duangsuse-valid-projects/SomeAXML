@@ -1,7 +1,6 @@
 package org.duangsuse.bin.pat
 
 import org.duangsuse.bin.*
-import kotlin.math.abs
 
 val nat8 = object: Pattern.Sized<Nat8> {
   override fun read(s: Reader): Nat8 = s.readNat8()
@@ -49,7 +48,7 @@ val nat16 = object: Pattern.Sized<Nat16> {
   override fun write(s: Writer, x: Nat16): Unit = s.writeInt16(x.toShort())
   override val size: Cnt = 16/8
 }
-internal fun Int16.uExt(): Int32 {
-  val signBit = if (this < 0) 0x0000_8000 else 0
-  return abs(this.toInt()) or signBit
-}
+const val signBit = 0x0000_8000
+internal fun Int16.uExt(): Int32 = if (this < 0) {
+  signBit.or(Int16.MAX_VALUE.minus(this).inv())
+} else this.toInt()
