@@ -48,6 +48,16 @@ val nat16 = object: Pattern.Sized<Nat16> {
   override fun write(s: Writer, x: Nat16): Unit = s.writeInt16(x.toShort())
   override val size: Cnt = 16/8
 }
+val bool8 = object: Pattern.Sized<Boolean> {
+  override fun read(s: Reader): Boolean = s.readNat8() != 0
+  override fun write(s: Writer, x: Boolean): Unit = s.writeNat8(if (x) 1 else 0)
+  override val size: Cnt = 8/Byte.SIZE_BITS
+}
+fun <T: BitFlags> bitFlags(inst: (Int32) -> T) = object: Pattern.Sized<T> {
+  override fun read(s: Reader): T = inst(s.readInt32())
+  override fun write(s: Writer, x: T) = s.writeInt32(x.toInt())
+  override val size: Cnt = Int32.SIZE_BYTES
+}
 
 const val signBit = 0x0000_8000
 /** Perform unsigned extension, left-padding with zeros without moving its sign bit */
