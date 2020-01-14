@@ -1,9 +1,6 @@
 package org.duangsuse.bin.pat
 
-import org.duangsuse.bin.ByteOrder
-import org.duangsuse.bin.Cnt
-import org.duangsuse.bin.Reader
-import org.duangsuse.bin.Writer
+import org.duangsuse.bin.*
 
 /** Add argument/return listen for [Pattern] read/write */
 abstract class PrePost<T>(private val item: Pattern<T>): Pattern.Sized<T> {
@@ -47,3 +44,17 @@ open class EndianSwitch<T>(item: Pattern<T>, private val newEndian: ByteOrder): 
 
 fun <T> Pattern<T>.littleEndian() = EndianSwitch.LittleEndian(this)
 fun <T> Pattern<T>.bigEndian() = EndianSwitch.BigEndian(this)
+
+inline fun <reified T> Pattern<T>.array(init: T, sizer: Pattern<Cnt>): Pattern<Array<T>>
+  = object: Pattern<Array<T>> {
+  override fun read(s: Reader): Array<T> {
+    val size = sizer.read(s)
+    val result: Array<T> = Array(size) {init}
+    for (i in 0 untilSize size) result[i] = this@array.read(s)
+    return result
+  }
+  override fun write(s: Writer, x: Array<T>) {
+    sizer.write(s, x.size)
+    for (item in x) this@array.write(s, item)
+  }
+}

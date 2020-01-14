@@ -9,13 +9,14 @@ import org.duangsuse.bin.Writer
 interface OptionalSized {
   val size: Cnt?
 }
+/** Some pattern that can be [read]/[write] on binary streams, maybe [Sized] */
 interface Pattern<T> {
   fun read(s: Reader): T
   fun write(s: Writer, x: T)
   interface Sized<T>: Pattern<T>, OptionalSized
 }
 
-/** Sequential binary pattern like C `struct` */
+/** Sequential binary pattern like C's `struct` */
 class Seq<T>(private val allocator: Allocator<T>, private vararg val items: Pattern<T>): Pattern.Sized<Tuple<T>> {
   override fun read(s: Reader): Tuple<T> {
     val result = allocator(items.size)
@@ -31,7 +32,7 @@ class Seq<T>(private val allocator: Allocator<T>, private vararg val items: Patt
       ?.mapTakeIfAllNotNull(OptionalSized::size)
       ?.sum()
 }
-/** Repeat of one substructure [item], with size depending on actual data stream */
+/** Repeat of one substructure [item], with size depending on actual data stream [readSize] */
 class Repeat<T: Any>(private val item: Pattern<T>, private val readSize: ActionOn<Reader, Cnt>): Pattern<Array<T>> {
   @Suppress("UNCHECKED_CAST")
   override fun read(s: Reader): Array<T> {
@@ -43,7 +44,7 @@ class Repeat<T: Any>(private val item: Pattern<T>, private val readSize: ActionO
     for (element in x) item.write(s, element)
   }
 }
-/** Conditional sub-patterns like C `union` can be decided depending on actual data stream with [flag] */
+/** Conditional sub-patterns [conditions] like C's `union` can be decided depending on actual data stream with [flag] */
 class Cond<T>(private val flag: Pattern<Idx>, private vararg val conditions: Pattern<T>): Pattern.Sized<Pair<Idx, T>> {
   override fun read(s: Reader): Pair<Idx, T> {
     val caseNo = flag.read(s)

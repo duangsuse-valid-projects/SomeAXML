@@ -2,10 +2,10 @@ package org.duangsuse.bin
 
 import org.duangsuse.bin.pat.Sized
 
-val Sized.lastIndex: Idx get() = size.dec()
-val Sized.indices: IdxRange get() = 0..lastIndex
+inline val Sized.lastIndex: Idx get() = size.dec()
+inline val Sized.indices: IdxRange get() = 0..lastIndex
 
-val IdxRange.size: Cnt get() = (last-first).inc()
+inline val IdxRange.size: Cnt get() = (last-first).inc()
 infix fun Idx.untilSize(size: Cnt): IdxRange = this..(this+size).dec()
 
 inline fun <R> MarkReset.positional(op: Producer<R>): R

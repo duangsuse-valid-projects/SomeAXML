@@ -2,6 +2,7 @@ package org.duangsuse.bin.io
 
 import org.duangsuse.bin.*
 
+/** Functions that rotates integral byte order */
 object Swap {
   fun swap(i: Int16) = rotateIntegral(Int16.SIZE_BYTES, 0xFF.toShort(), i16UShr, i16And, i16Shl, i16Or, i)
   fun swap(i: Int32) = rotateIntegral(Int32.SIZE_BYTES, 0xFF, Int32::ushr, i32And, Int32::shl, i32Or, i)

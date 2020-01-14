@@ -1,5 +1,6 @@
 package org.duangsuse.bin
 
+/** Something like stream with [estimate] and [skip] subtracts it */
 interface Estimable {
   val estimate: Cnt
   fun skip(n: Cnt)
@@ -28,6 +29,7 @@ expect interface Flushable {
   fun flush()
 }
 expect class StreamEnd(): Exception
+
 interface ReadControl: Estimable, MarkReset, Closeable {
   val position: Cnt
 }

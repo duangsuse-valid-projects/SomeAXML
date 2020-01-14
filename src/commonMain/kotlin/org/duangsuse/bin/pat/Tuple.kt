@@ -8,8 +8,16 @@ import kotlin.reflect.KProperty
 interface Sized {
   val size: Cnt
 }
+/** Creates a [Tuple] with given size */
 typealias Allocator<T> = (Cnt) -> Tuple<T>
 
+/** Tuple is an array-like object with `val (x0, x1) = (tup)` destruct and index access support
+ *
+ * + tuple items are stored in array [items], since Kotlin does not support reified type parameters in class,
+ * it should be overridden and created in subclasses using [size]
+ * + named indices using first-class delegation [Index] are supported, declare them using `var name: Type by index(idx)`
+ * + destruct component 1..4 are provided, see [Tuple.component1]
+ */
 abstract class Tuple<E>(override val size: Cnt): Sized {
   protected abstract val items: Array<E>
   operator fun get(index: Idx) = items[index]

@@ -48,21 +48,9 @@ val nat16 = object: Pattern.Sized<Nat16> {
   override fun write(s: Writer, x: Nat16): Unit = s.writeInt16(x.toShort())
   override val size: Cnt = 16/8
 }
+
 const val signBit = 0x0000_8000
+/** Perform unsigned extension, left-padding with zeros without moving its sign bit */
 internal fun Int16.uExt(): Int32 = if (this < 0) {
   signBit.or(Int16.MAX_VALUE.minus(this).inv())
 } else this.toInt()
-
-inline fun <reified T> Pattern<T>.array(init: T, sizer: Pattern<Cnt>): Pattern<Array<T>>
-  = object: Pattern<Array<T>> {
-  override fun read(s: Reader): Array<T> {
-    val size = sizer.read(s)
-    val result: Array<T> = Array(size) {init}
-    for (i in 0 untilSize size) result[i] = this@array.read(s)
-    return result
-  }
-  override fun write(s: Writer, x: Array<T>) {
-    sizer.write(s, x.size)
-    for (item in x) this@array.write(s, item)
-  }
-}
