@@ -55,8 +55,14 @@ val bool8 = object: Pattern.Sized<Boolean> {
 }
 fun <T: BitFlags> bitFlags(inst: (Int32) -> T) = object: Pattern.Sized<T> {
   override fun read(s: Reader): T = inst(s.readInt32())
-  override fun write(s: Writer, x: T) = s.writeInt32(x.toInt())
+  override fun write(s: Writer, x: T): Unit = s.writeInt32(x.toInt())
   override val size: Cnt = Int32.SIZE_BYTES
+}
+fun <T> mapped(item: Pattern.Sized<T>, map: Map<T, T>) = object: Pattern.Sized<T> {
+  private val revMap = map.reverseMap()
+  override fun read(s: Reader): T = map.getValue(item.read(s))
+  override fun write(s: Writer, x: T): Unit = item.write(s, revMap.getValue(x))
+  override val size: Cnt? get() = item.size
 }
 
 const val signBit = 0x0000_8000

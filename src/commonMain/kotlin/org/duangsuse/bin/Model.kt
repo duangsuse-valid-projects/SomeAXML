@@ -33,7 +33,9 @@ class StreamEnd: Exception("unexpected EOF")
 interface ReadControl: Estimable, MarkReset, Closeable {
   val position: Cnt
 }
-interface WriteControl: Flushable, Closeable
+interface WriteControl: Flushable, Closeable {
+  val count: Cnt
+}
 
 interface DataReader: ByteOrdered {
   fun readNat8():Nat8

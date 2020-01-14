@@ -37,6 +37,10 @@ fun DataWriter.writePadding(n: Cnt, x: Nat8 = 0x00) {
 fun Nat8Writer.writePadding(n: Cnt, x: Nat8 = 0x00) {
   repeat(n) { write(x) }
 }
+fun Writer.makeAligned(n: Cnt) {
+  val chunkPosition = (count % n)
+  if (chunkPosition != 0) writePadding(n - chunkPosition)
+}
 
 fun ByteOrdered.makeBigEndian() { byteOrder = ByteOrder.BigEndian }
 fun ByteOrdered.makeLittleEndian() { byteOrder = ByteOrder.LittleEndian }
@@ -52,3 +56,4 @@ fun ByteIterator.widenIterator(): IntIterator = object: IntIterator() {
   override fun nextInt(): Int = this@widenIterator.nextByte().toInt()
 }
 fun <E> MutableList<E>.removeLast(): E = removeAt(lastIndex)
+fun <K, V> Map<K, V>.reverseMap(): Map<V, K> = keys.map { k -> this.getValue(k) to k }.toMap()

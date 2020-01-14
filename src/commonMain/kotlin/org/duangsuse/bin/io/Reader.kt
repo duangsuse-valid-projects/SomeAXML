@@ -5,8 +5,8 @@ import org.duangsuse.bin.io.Swap.swap
 
 class Reader(private val r: Nat8Reader): org.duangsuse.bin.Reader {
   override var byteOrder: ByteOrder = nativeOrder
-  override val position: Cnt get() = mPosition
-  private var mPosition = 0
+  override val position get() = mPosition
+  private var mPosition: Cnt = 0
   private val mPositionStack: MutableList<Cnt> by lazy(::mutableListOf)
 
   override fun readNat8(): Nat8 = r.read().also { ++mPosition }

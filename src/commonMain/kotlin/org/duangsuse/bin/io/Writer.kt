@@ -4,8 +4,10 @@ import org.duangsuse.bin.*
 
 class Writer(private val w: Nat8Writer): org.duangsuse.bin.Writer {
   override var byteOrder: ByteOrder = LANGUAGE_ORDER
-  override fun writeNat8(x: Nat8) = w.write(x)
+  override val count get() = mCount
+  private var mCount: Cnt = 0
 
+  override fun writeNat8(x: Nat8) = w.write(x).also { ++mCount }
   override fun writeInt8(x: Int8) = w.write(x.toInt())
   override fun writeInt16(x: Int16) = write(Int16.SIZE_BYTES, (-0x0100).toShort(), i16Shl, i16Select, x)
   override fun writeInt32(x: Int32) = write(Int32.SIZE_BYTES, (-0x0100_0000), Int32::shl, i32Select, x)
