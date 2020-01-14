@@ -11,10 +11,10 @@ object Swap {
 internal val i16Shl: Shift<Int16> = { c -> toInt().shl(c).toShort() }
 internal val i16UShr: Shift<Int16> = { c -> toInt().ushr(c).toShort() }
 
-internal val i16And: ByteSelect<Int16> = { ss -> toInt().and(ss.toInt()).toByte() }
-internal val i32And: ByteSelect<Int32> = { si -> and(si).toByte() }
-internal val i64And: ByteSelect<Int64> = { sl -> and(sl).toByte() }
+internal val i16And: Nat8Select<Int16> = { ss -> toInt().and(ss.toInt()) }
+internal val i32And: Nat8Select<Int32> = { si -> and(si) }
+internal val i64And: Nat8Select<Int64> = { sl -> and(sl).toInt() }
 
-internal val i16Or: ByteUnion<Int16> = { b -> toInt().or(b.toInt()).toShort() }
-internal val i32Or: ByteUnion<Int32> = { b -> or(b.toInt()) }
-internal val i64Or: ByteUnion<Int64> = { b -> or(b.toLong()) }
+internal val i16Or: Nat8Union<Int16> = { b -> toInt().or(b).toShort() }
+internal val i32Or: Nat8Union<Int32> = { b -> or(b) }
+internal val i64Or: Nat8Union<Int64> = { b -> or(b.toLong()) }

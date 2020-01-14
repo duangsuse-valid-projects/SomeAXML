@@ -8,11 +8,11 @@ import kotlin.test.assertFails
 
 class InStreamByteReaderTests {
   private val testBin: InputStream get() = this::class.java.getResourceAsStream("test_binary")
-  private fun makeS(): InStreamByteReader = testBin.byteReader()
+  private fun makeS(): InStreamNat8Reader = testBin.byteReader()
 
   private val bytesBc = "bc".toByteArray()
-  private fun readAbc(s: ByteReader) {
-    assertEquals('a'.toByte(), s.read())
+  private fun readAbc(s: Nat8Reader) {
+    assertEquals('a'.toInt(), s.read())
     assertArrayEquals(bytesBc, s.takeByte(2))
   }
 
@@ -23,7 +23,7 @@ class InStreamByteReaderTests {
       val buf = Buffer(3)
       s.readTo(buf, 0..1)
       assertArrayEquals("AB\u0000".toByteArray(), buf)
-      assertEquals('C'.toByte(), s.read())
+      assertEquals('C'.toInt(), s.read())
     }
     readPartial()
   }
@@ -45,10 +45,10 @@ class InStreamByteReaderTests {
 }
 class OutStreamByteWriterTests {
   private lateinit var byteStream: ByteArrayOutputStream
-  private fun makeS(): OutStreamByteWriter = ByteArrayOutputStream(6).also { byteStream = it }.byteWriter()
+  private fun makeS(): OutStreamNat8Writer = ByteArrayOutputStream(6).also { byteStream = it }.byteWriter()
   @Test fun basicWrite() {
     val s = makeS()
-    s.write('a'.toByte()); s.writeFrom("bc".toByteArray())
+    s.write('a'.toInt()); s.writeFrom("bc".toByteArray())
     assertArrayEquals("abc".toByteArray(), byteStream.toByteArray())
   }
   // close, flush, writeFrom omitted

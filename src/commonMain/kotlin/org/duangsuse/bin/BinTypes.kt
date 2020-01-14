@@ -1,5 +1,7 @@
 package org.duangsuse.bin
 
+/** Reference to JDK 's InputStream */
+typealias Nat8 = Int
 typealias Int8 = Byte
 typealias Int16 = Short
 typealias Int32 = Int

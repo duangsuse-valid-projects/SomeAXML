@@ -14,9 +14,14 @@ inline fun <R> MarkReset.positional(op: Producer<R>): R
 inline fun <R> Closeable.use(op: Producer<R>): R
   = try { op() } finally { close() }
 
-fun ByteReader.takeByte(n: Cnt): Buffer {
+fun Nat8Reader.takeByte(n: Cnt): Buffer {
   val buffer = Buffer(n)
   readTo(buffer); return buffer
+}
+fun Nat8Reader.takeNat8(n: Cnt): IntArray {
+  val buffer = IntArray(n)
+  for (i in (0 untilSize n)) buffer[i] = read()
+  return buffer
 }
 fun Reader.makeAligned(n: Cnt) {
   val chunkPosition = (position % n)
@@ -27,9 +32,13 @@ fun ByteOrdered.makeBigEndian() { byteOrder = ByteOrder.BigEndian }
 fun ByteOrdered.makeLittleEndian() { byteOrder = ByteOrder.LittleEndian }
 fun ByteOrdered.makeNativeEndian() { byteOrder = nativeOrder }
 
-fun Sequence<Byte>.toArray(n: Cnt): ByteArray {
-  val buffer = Buffer(n)
+fun Sequence<Nat8>.toArray(n: Cnt): IntArray {
+  val buffer = IntArray(n)
   for ((i, b) in this.withIndex()) buffer[i] = b
   return buffer
+}
+fun ByteIterator.widenIterator(): IntIterator = object: IntIterator() {
+  override fun hasNext(): Boolean = this@widenIterator.hasNext()
+  override fun nextInt(): Int = this@widenIterator.nextByte().toInt()
 }
 fun <E> MutableList<E>.removeLast(): E = removeAt(lastIndex)

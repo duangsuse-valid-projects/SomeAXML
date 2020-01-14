@@ -2,10 +2,11 @@ package org.duangsuse.bin.io
 
 import org.duangsuse.bin.*
 
-class Writer(private val w: ByteWriter): org.duangsuse.bin.Writer {
+class Writer(private val w: Nat8Writer): org.duangsuse.bin.Writer {
   override var byteOrder: ByteOrder = LANGUAGE_ORDER
-  override fun writeInt8(x: Int8) = w.write(x)
+  override fun writeNat8(x: Nat8) = w.write(x)
 
+  override fun writeInt8(x: Int8) = w.write(x.toInt())
   override fun writeInt16(x: Int16) = write(Int16.SIZE_BYTES, (-0x7f00).toShort(), i16Shl, i16And, x)
   override fun writeInt32(x: Int32) = write(Int32.SIZE_BYTES, (-0x7f00_0000), Int32::shl, i32And, x)
   override fun writeInt64(x: Int64) = write(Int64.SIZE_BYTES, (-0x7f00_0000_0000_0000L), Int64::shl, i64And, x)
@@ -15,14 +16,14 @@ class Writer(private val w: ByteWriter): org.duangsuse.bin.Writer {
 
   private inline fun <I> write
     (n: Cnt, byte_left: I,
-     crossinline shl: Shift<I>, crossinline and: ByteSelect<I>,
+     crossinline shl: Shift<I>, crossinline and: Nat8Select<I>,
      i: I) {
-    val bytes = integralToBytes(n, byte_left, shl, and, i)
+    val bytes = integralToNat8s(n, byte_left, shl, and, i)
     if (shouldSwap) {
       val revBuffer = bytes.toArray(n); revBuffer.reverse()
-      for (b in revBuffer) writeInt8(b)
+      for (b in revBuffer) writeNat8(b)
     } else {
-      for (b in bytes) writeInt8(b)
+      for (b in bytes) writeNat8(b)
     }
   }
   private val shouldSwap: Boolean get() = byteOrder != LANGUAGE_ORDER

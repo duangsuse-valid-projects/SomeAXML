@@ -1,8 +1,8 @@
 package org.duangsuse.bin
 
 typealias Shift<I> = I.(Cnt) -> I
-typealias ByteSelect<I> = I.(I) -> Byte
-typealias ByteUnion<I> = I.(Byte) -> I
+typealias Nat8Select<I> = I.(I) -> Nat8
+typealias Nat8Union<I> = I.(Nat8) -> I
 
 /**
  * integral [I] to sequence of [Byte]
@@ -11,10 +11,10 @@ typealias ByteUnion<I> = I.(Byte) -> I
  * ^pop left (shl(8*n)&and)
  * ```
  */
-inline fun <I> integralToBytes
+inline fun <I> integralToNat8s
   (n: Cnt, byte_left: I,
-   crossinline shl: Shift<I>, crossinline and: ByteSelect<I>,
-   i: I): Sequence<Byte> = sequence {
+   crossinline shl: Shift<I>, crossinline and: Nat8Select<I>,
+   i: I): Sequence<Nat8> = sequence {
   var accumulator = i
   for (_t in 1..n) {
     yield(accumulator.and(byte_left))
@@ -34,10 +34,10 @@ inline fun <I> integralToBytes
  * ...
  * ```
  */
-inline fun <I> bytesToIntegral
+inline fun <I> nat8sToIntegral
   (zero: I,
-   crossinline shl: Shift<I>, crossinline or: ByteUnion<I>,
-   bytes: ByteIterator): I {
+   crossinline shl: Shift<I>, crossinline or: Nat8Union<I>,
+   bytes: IntIterator): I {
   var accumulator = zero
   for (byte in bytes) {
     accumulator = accumulator.shl(Byte.SIZE_BITS).or(byte)
@@ -53,8 +53,8 @@ inline fun <I> bytesToIntegral
  * ```
  */
 inline fun <I> rotateIntegral
-  (n: Cnt, byte_right: I, crossinline ushr: Shift<I>, crossinline and: ByteSelect<I>,
-   crossinline shl: Shift<I>, crossinline or: ByteUnion<I>,
+  (n: Cnt, byte_right: I, crossinline ushr: Shift<I>, crossinline and: Nat8Select<I>,
+   crossinline shl: Shift<I>, crossinline or: Nat8Union<I>,
    i: I): I {
   var source = i; var rotated = i
   for (_t in 1..n) {
