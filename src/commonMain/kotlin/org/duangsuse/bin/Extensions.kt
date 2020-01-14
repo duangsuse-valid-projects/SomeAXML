@@ -1,7 +1,5 @@
 package org.duangsuse.bin
 
-import org.duangsuse.bin.pat.Sized
-
 inline val Sized.lastIndex: Idx get() = size.dec()
 inline val Sized.indices: IdxRange get() = 0..lastIndex
 
@@ -20,12 +18,14 @@ fun Nat8Reader.takeByte(n: Cnt): Buffer {
 }
 fun Nat8Reader.takeNat8(n: Cnt): IntArray {
   val buffer = IntArray(n)
-  for (i in (0 untilSize n)) {
+  var neg1Detect = 0
+  for (i in 0.untilSize(n)) {
     val byte = read()
-    if (byte == (-1)) throw StreamEnd()
-    else buffer[i] = byte
+    buffer[i] = byte
+    neg1Detect = neg1Detect or byte
   }
-  return buffer
+  if (neg1Detect < 0) throw StreamEnd()
+  else return buffer
 }
 fun ReadControl.makeAligned(n: Cnt) {
   val chunkPosition = (position % n)

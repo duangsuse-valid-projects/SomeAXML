@@ -1,14 +1,7 @@
 package org.duangsuse.bin.pat
 
-import org.duangsuse.bin.Cnt
-import org.duangsuse.bin.Idx
-import org.duangsuse.bin.ActionOn
-import org.duangsuse.bin.Reader
-import org.duangsuse.bin.Writer
+import org.duangsuse.bin.*
 
-interface OptionalSized {
-  val size: Cnt?
-}
 /** Some pattern that can be [read]/[write] on binary streams, maybe [Sized] */
 interface Pattern<T> {
   fun read(s: Reader): T

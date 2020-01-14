@@ -56,3 +56,10 @@ interface ByteOrdered {
 }
 expect val nativeOrder: ByteOrder
 val LANGUAGE_ORDER = ByteOrder.BigEndian
+
+interface OptionalSized {
+  val size: Cnt?
+}
+interface Sized: OptionalSized {
+  override val size: Cnt
+}

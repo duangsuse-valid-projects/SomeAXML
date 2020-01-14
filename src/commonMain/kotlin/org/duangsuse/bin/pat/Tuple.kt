@@ -2,12 +2,10 @@ package org.duangsuse.bin.pat
 
 import org.duangsuse.bin.Cnt
 import org.duangsuse.bin.Idx
+import org.duangsuse.bin.Sized
 import org.duangsuse.bin.indices
 import kotlin.reflect.KProperty
 
-interface Sized {
-  val size: Cnt
-}
 /** Creates a [Tuple] with given size */
 typealias Allocator<T> = (Cnt) -> Tuple<T>
 
