@@ -8,6 +8,8 @@ import kotlin.reflect.KProperty
 interface Sized {
   val size: Cnt
 }
+typealias Allocator<T> = (Cnt) -> Tuple<T>
+
 abstract class Tuple<E>(override val size: Cnt): Sized {
   protected abstract val items: Array<E>
   operator fun get(index: Idx) = items[index]
