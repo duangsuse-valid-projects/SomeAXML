@@ -29,5 +29,4 @@ class TupleTests {
     val (a, b, c) = tup
     assertEquals(listOf(0, 0, 9), listOf(a, b, c))
   }
-  private fun <E> Tuple<E>.toList(): List<E> = indices.map(this::get)
 }
