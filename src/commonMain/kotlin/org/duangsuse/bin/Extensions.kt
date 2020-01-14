@@ -27,7 +27,7 @@ fun Nat8Reader.takeNat8(n: Cnt): IntArray {
   }
   return buffer
 }
-fun Reader.makeAligned(n: Cnt) {
+fun ReadControl.makeAligned(n: Cnt) {
   val chunkPosition = (position % n)
   if (chunkPosition != 0) skip(n - chunkPosition)
 }
