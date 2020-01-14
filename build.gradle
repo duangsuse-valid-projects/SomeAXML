@@ -7,7 +7,7 @@ group = "org.duangsuse"
 version = "1.0"
 
 kotlin {
-  jvm(); //js()
+  jvm(); js()
   sourceSets {
     commonMain {
       dependencies { implementation(kotlin("stdlib-common")) }
@@ -23,6 +23,12 @@ kotlin {
     }
     jvmTest {
       dependencies { implementation(kotlin("test-junit")) }
+    }
+    jsMain {
+      dependencies { implementation(kotlin("stdlib-js")) }
+    }
+    jsTest {
+      dependencies { implementation(kotlin("test-js")) }
     }
   }
 }

@@ -22,13 +22,13 @@ interface Writer: WriteControl, DataWriter
 interface MarkReset {
   fun mark() fun reset()
 }
-expect interface Closeable {
-  fun close()
-}
 expect interface Flushable {
   fun flush()
 }
-expect class StreamEnd(): Exception
+expect interface Closeable {
+  fun close()
+}
+class StreamEnd: Exception("unexpected EOF")
 
 interface ReadControl: Estimable, MarkReset, Closeable {
   val position: Cnt
