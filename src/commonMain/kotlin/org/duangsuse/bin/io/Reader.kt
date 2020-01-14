@@ -9,8 +9,8 @@ class Reader(private val r: Nat8Reader): org.duangsuse.bin.Reader {
   private var mPosition = 0
   private val mPositionStack: MutableList<Cnt> by lazy(::mutableListOf)
 
-  override fun readNat8(): Nat8 = r.read()
-  override fun readInt8(): Int8 = readNat8().toByte().also { ++mPosition }
+  override fun readNat8(): Nat8 = r.read().also { ++mPosition }
+  override fun readInt8(): Int8 = readNat8().toByte()
   override fun readInt16(): Int16 = inOrder(read(0.toShort(), i16Shl, i16Or, Int16.SIZE_BITS))
   override fun readInt32(): Int32 = inOrder(read(0, Int32::shl, i32Or, Int32.SIZE_BYTES))
   override fun readInt64(): Int64 = inOrder(read(0L, Int64::shl, i64Or, Int64.SIZE_BYTES))
