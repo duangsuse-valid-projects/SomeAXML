@@ -48,13 +48,9 @@ fun Writer.makeAligned(n: Cnt) {
 fun DataWriter.writePadding(n: Cnt, x: Nat8 = 0x00) {
   repeat(n) { writeNat8(x) }
 }
-fun Nat8Writer.writePadding(n: Cnt, x: Nat8 = 0x00) {
-  repeat(n) { write(x) }
-}
 
 fun ByteOrdered.makeBigEndian() { byteOrder = ByteOrder.BigEndian }
 fun ByteOrdered.makeLittleEndian() { byteOrder = ByteOrder.LittleEndian }
-fun ByteOrdered.makeNativeEndian() { byteOrder = nativeOrder }
 
 //// Collections & Maps
 
@@ -62,10 +58,6 @@ fun Iterable<Nat8>.toArray(n: Cnt): IntArray {
   val buffer = IntArray(n)
   for ((i, b) in this.withIndex()) buffer[i] = b
   return buffer
-}
-fun ByteIterator.widenIterator(): IntIterator = object: IntIterator() {
-  override fun hasNext(): Boolean = this@widenIterator.hasNext()
-  override fun nextInt(): Int = this@widenIterator.nextByte().toInt()
 }
 
 fun <E> MutableList<E>.removeLast(): E = removeAt(lastIndex)
