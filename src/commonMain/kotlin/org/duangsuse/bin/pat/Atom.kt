@@ -59,6 +59,11 @@ val bool8 = object: Pattern.Sized<Boolean> {
   override val size: Cnt = 8/Byte.SIZE_BITS
 }
 
+fun bytes(n: Cnt) = object: Pattern<ByteArray> {
+  override fun read(s: Reader): ByteArray = s.asNat8Reader().takeByte(n)
+  override fun write(s: Writer, x: ByteArray): Unit = s.asNat8Writer().writeFrom(x)
+}
+
 const val signBit16 = 0x0000_8000
 const val signBit32 = 0x8000_0000L
 /** Perform unsigned extension, left-padding with zeros without moving its sign bit */
