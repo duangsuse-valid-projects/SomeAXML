@@ -81,3 +81,7 @@ internal inline fun <reified T> Collection<*>.takeIfAllIsInstance(): List<T>?
 
 internal fun <T, R: Any> Collection<T>.mapTakeIfAllNotNull(op: (T) -> R?): List<R>?
   = mapNotNull(op).takeIf { it.size == this.size }
+
+//// Functions
+
+fun impossible(): Nothing = error("impossible")

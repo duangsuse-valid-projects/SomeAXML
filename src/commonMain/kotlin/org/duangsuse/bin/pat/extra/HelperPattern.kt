@@ -62,3 +62,13 @@ open class Contextual<A, B>(private val head: Pattern<A>, private val body: (A) 
     body(dataDep).write(s, state)
   }
 }
+
+/** [IllegalStateException] will be thrown when called */
+object Unknown: Pattern<Nothing> {
+  override fun read(s: Reader): Nothing = error("unknown data part @${s.position}")
+  override fun write(s: Writer, x: Nothing) = impossible()
+}
+operator fun Pattern<Nothing>.unaryPlus() = object: Pattern<Any> {
+  override fun read(s: Reader): Nothing = this@unaryPlus.read(s)
+  override fun write(s: Writer, x: Any) = impossible()
+}
