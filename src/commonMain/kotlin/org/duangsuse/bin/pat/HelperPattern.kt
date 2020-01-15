@@ -82,6 +82,16 @@ inline fun <reified T> Pattern<T>.array(init: T, sizer: Pattern<Cnt>): Pattern<A
     for (item in x) this@array.write(s, item)
   }
 }
+fun Pattern<Cnt>.sizedByteArray() = object: Pattern<ByteArray> {
+  override fun read(s: Reader): ByteArray {
+    val n = this@sizedByteArray.read(s)
+    return s.asNat8Reader().takeByte(n)
+  }
+  override fun write(s: Writer, x: ByteArray) {
+    this@sizedByteArray.write(s, x.size)
+    s.asNat8Writer().writeFrom(x)
+  }
+}
 
 fun <BIT_FL: BitFlags> bitFlags(creator: (Int32) -> BIT_FL) = object: Pattern.Sized<BIT_FL> {
   override fun read(s: Reader): BIT_FL = creator(s.readInt32())
