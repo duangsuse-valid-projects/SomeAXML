@@ -38,7 +38,7 @@ val rat64 = object: Pattern.Sized<Rat64> {
   override val size: Cnt = 64/Byte.SIZE_BITS
 }
 
-val char = object: Pattern.Sized<Char> {
+val char16 = object: Pattern.Sized<Char> {
   override fun read(s: Reader): Char = s.readInt16().toChar()
   override fun write(s: Writer, x: Char): Unit = s.writeInt16(x.toShort())
   override val size: Cnt = Char.SIZE_BYTES
@@ -46,23 +46,12 @@ val char = object: Pattern.Sized<Char> {
 val nat16 = object: Pattern.Sized<Nat16> {
   override fun read(s: Reader): Nat16 = s.readInt16().uExt()
   override fun write(s: Writer, x: Nat16): Unit = s.writeInt16(x.toShort())
-  override val size: Cnt = 16/8
+  override val size: Cnt = 16/Byte.SIZE_BITS
 }
 val bool8 = object: Pattern.Sized<Boolean> {
   override fun read(s: Reader): Boolean = s.readNat8() != 0
   override fun write(s: Writer, x: Boolean): Unit = s.writeNat8(if (x) 1 else 0)
   override val size: Cnt = 8/Byte.SIZE_BITS
-}
-fun <T: BitFlags> bitFlags(inst: (Int32) -> T) = object: Pattern.Sized<T> {
-  override fun read(s: Reader): T = inst(s.readInt32())
-  override fun write(s: Writer, x: T): Unit = s.writeInt32(x.toInt())
-  override val size: Cnt = Int32.SIZE_BYTES
-}
-fun <T> mapped(item: Pattern.Sized<T>, map: Map<T, T>) = object: Pattern.Sized<T> {
-  private val revMap = map.reverseMap()
-  override fun read(s: Reader): T = map.getValue(item.read(s))
-  override fun write(s: Writer, x: T): Unit = item.write(s, revMap.getValue(x))
-  override val size: Cnt? get() = item.size
 }
 
 const val signBit = 0x0000_8000

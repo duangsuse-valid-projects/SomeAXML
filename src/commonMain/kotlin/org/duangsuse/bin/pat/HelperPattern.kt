@@ -58,3 +58,16 @@ inline fun <reified T> Pattern<T>.array(init: T, sizer: Pattern<Cnt>): Pattern<A
     for (item in x) this@array.write(s, item)
   }
 }
+
+fun <BIT_FL: BitFlags> bitFlags(creator: (Int32) -> BIT_FL) = object: Pattern.Sized<BIT_FL> {
+  override fun read(s: Reader): BIT_FL = creator(s.readInt32())
+  override fun write(s: Writer, x: BIT_FL): Unit = s.writeInt32(x.toInt())
+  override val size: Cnt = Int32.SIZE_BYTES
+}
+fun <T> mapped(item: Pattern.Sized<T>, map: Map<T, T>) = object: Pattern.Sized<T> {
+  private val revMap = map.reverseMap()
+  override fun read(s: Reader): T = map.getValue(item.read(s))
+  override fun write(s: Writer, x: T): Unit = item.write(s, revMap.getValue(x))
+  override val size: Cnt? get() = item.size
+}
+
