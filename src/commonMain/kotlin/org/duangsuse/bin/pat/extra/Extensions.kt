@@ -30,3 +30,9 @@ fun <T> Pattern.Sized<T>.magic(value: T, onError: (T) -> Nothing) = object: Patt
   override val size: Cnt? get() = this@magic.size
 }
 infix fun <T> Pattern.Sized<T>.magic(value: T) = magic(value) { error("Unknown magic <$it>") }
+
+infix fun Pattern.Sized<Cnt>.padding(k: Int) = object: Pattern.Sized<Cnt> {
+  override fun read(s: Reader): Cnt = this@padding.read(s)+k
+  override fun write(s: Writer, x: Cnt) = this@padding.write(s, x-k)
+  override val size: Cnt? get() = this@padding.size
+}
