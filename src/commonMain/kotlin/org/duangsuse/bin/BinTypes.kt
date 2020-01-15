@@ -3,6 +3,7 @@ package org.duangsuse.bin
 /** Natural number, Reference to JDK 's InputStream */
 typealias Nat8 = Int
 typealias Nat16 = Int
+typealias Nat32 = Long
 
 typealias Int8 = Byte
 typealias Int16 = Short

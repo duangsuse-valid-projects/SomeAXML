@@ -48,14 +48,23 @@ val nat16 = object: Pattern.Sized<Nat16> {
   override fun write(s: Writer, x: Nat16): Unit = s.writeInt16(x.toShort())
   override val size: Cnt = 16/Byte.SIZE_BITS
 }
+val nat32 = object: Pattern.Sized<Nat32> {
+  override fun read(s: Reader): Nat32 = s.readInt32().uExt()
+  override fun write(s: Writer, x: Nat32): Unit = s.writeInt32(x.toInt())
+  override val size: Cnt = 32/Byte.SIZE_BITS
+}
 val bool8 = object: Pattern.Sized<Boolean> {
   override fun read(s: Reader): Boolean = s.readNat8() != 0
   override fun write(s: Writer, x: Boolean): Unit = s.writeNat8(if (x) 1 else 0)
   override val size: Cnt = 8/Byte.SIZE_BITS
 }
 
-const val signBit = 0x0000_8000
+const val signBit16 = 0x0000_8000
+const val signBit32 = 0x8000_0000L
 /** Perform unsigned extension, left-padding with zeros without moving its sign bit */
 internal fun Int16.uExt(): Int32 = if (this < 0) {
-  signBit.or(Int16.MAX_VALUE.minus(this).inv())
+  signBit16.or(Int16.MAX_VALUE.minus(this).inv())
 } else this.toInt()
+internal fun Int32.uExt(): Int64 = if (this < 0) {
+  signBit32.or(Int32.MAX_VALUE.toLong().minus(this).inv())
+} else this.toLong()
