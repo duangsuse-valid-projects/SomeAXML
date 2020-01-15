@@ -12,6 +12,7 @@ object Swap {
 internal val i16Shl: Shift<Int16> = { c -> toInt().shl(c).toShort() }
 internal val i16UShr: Shift<Int16> = { c -> toInt().ushr(c).toShort() }
 
+// rightmost byte selector
 internal val i16And: Nat8Select<Int16> = { ss -> toInt().and(ss.toInt()) }
 internal val i32And: Nat8Select<Int32> = { si -> and(si) }
 internal val i64And: Nat8Select<Int64> = { sl -> and(sl).toInt() }

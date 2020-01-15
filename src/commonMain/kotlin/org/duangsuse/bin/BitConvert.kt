@@ -8,22 +8,22 @@ typealias Nat8Union<I> = I.(Nat8) -> I
  * integral [I] to sequence of [Byte]
  * ```
  * 1234 -> 1,2,3,4
- * ^pop left (shl(8*n)&and)
+ * ^pop left (shl(8*n)&select)
  * ```
  */
-inline fun <I> integralToNat8s
+inline fun <I> nat8sFromInteger
   (n: Cnt, byte_left: I,
-   crossinline shl: Shift<I>, crossinline and: Nat8Select<I>,
+   crossinline shl: Shift<I>, crossinline select: Nat8Select<I>,
    i: I): Sequence<Nat8> = sequence {
   var accumulator = i
   for (_t in 1..n) {
-    yield(accumulator.and(byte_left))
+    yield(accumulator.select(byte_left))
     accumulator = accumulator.shl(Byte.SIZE_BITS)
   }
 }
 
 /**
- * sequence of Byte to integral
+ * sequence of byte to integral
  * ```
  * 1,2,3,4 -> 1234:
  * (shl&or...&or)^push right
@@ -46,14 +46,15 @@ inline fun <I> nat8sToIntegral
 }
 
 /**
- * rotate byte order (unsigned ushr is ok)
+ * rotate byte order (unsigned "ushr" is ok)
  * ```
  * 1 2 3 4 ->(rotate) 4 3 2 1
  * pop   ^(ushr&and)     push^(shl&or)
  * ```
  */
 inline fun <I> rotateIntegral
-  (n: Cnt, byte_right: I, crossinline ushr: Shift<I>, crossinline and: Nat8Select<I>,
+  (n: Cnt, byte_right: I,
+   crossinline ushr: Shift<I>, crossinline and: Nat8Select<I>,
    crossinline shl: Shift<I>, crossinline or: Nat8Union<I>,
    i: I): I {
   var source = i; var rotated = i

@@ -18,9 +18,9 @@ class Writer(private val w: Nat8Writer): org.duangsuse.bin.Writer {
 
   private inline fun <I> write
     (n: Cnt, byte_left: I,
-     crossinline shl: Shift<I>, crossinline and: Nat8Select<I>,
+     crossinline shl: Shift<I>, crossinline select: Nat8Select<I>,
      i: I) {
-    val bytes = integralToNat8s(n, byte_left, shl, and, i)
+    val bytes = nat8sFromInteger(n, byte_left, shl, select, i)
     if (shouldSwap) {
       val revBuffer = bytes.toArray(n); revBuffer.reverse()
       for (b in revBuffer) writeNat8(b)
