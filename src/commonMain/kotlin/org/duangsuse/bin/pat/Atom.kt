@@ -38,6 +38,11 @@ val rat64 = object: Pattern.Sized<Rat64> {
   override val size: Cnt = 64/Byte.SIZE_BITS
 }
 
+val bool8 = object: Pattern.Sized<Boolean> {
+  override fun read(s: Reader): Boolean = s.readNat8() != 0
+  override fun write(s: Writer, x: Boolean): Unit = s.writeNat8(if (x) 1 else 0)
+  override val size: Cnt = 8/Byte.SIZE_BITS
+}
 val char16 = object: Pattern.Sized<Char> {
   override fun read(s: Reader): Char = s.readInt16().toChar()
   override fun write(s: Writer, x: Char): Unit = s.writeInt16(x.toShort())
@@ -53,16 +58,3 @@ val nat32 = object: Pattern.Sized<Nat32> {
   override fun write(s: Writer, x: Nat32): Unit = s.writeInt32(x.toInt())
   override val size: Cnt = 32/Byte.SIZE_BITS
 }
-val bool8 = object: Pattern.Sized<Boolean> {
-  override fun read(s: Reader): Boolean = s.readNat8() != 0
-  override fun write(s: Writer, x: Boolean): Unit = s.writeNat8(if (x) 1 else 0)
-  override val size: Cnt = 8/Byte.SIZE_BITS
-}
-
-/** Perform unsigned extension, left-padding with zeros without moving its sign bit */
-internal fun Int16.uExt(): Int32 = if (this < 0) {
-  0x0001_0000 + this
-} else this.toInt()
-internal fun Int32.uExt(): Int64 = if (this < 0) {
-  0x0000_0001_0000_0000L + this
-} else this.toLong()

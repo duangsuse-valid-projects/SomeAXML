@@ -33,6 +33,3 @@ open class BitFlags32(private var i: Int32): BitFlags {
   override fun hashCode(): Int = i
   override fun toString(): String = "BitFlags32(${i.toString(2)})"
 }
-
-internal fun Int.bitUnion(other: Int): Int = or(other)
-internal fun Int.bitSubtract(mask: Int): Int = and(mask.inv())

@@ -57,10 +57,3 @@ open class Cond<T>(private val flag: Pattern<Idx>, private vararg val conditions
       ?.mapTakeIfAllNotNull(OptionalSized::size)
       ?.toSet()?.singleOrNull()
 }
-
-
-internal inline fun <reified T> Collection<*>.takeIfAllIsInstance(): List<T>?
-  = filterIsInstance<T>().takeIf { it.size == this.size }
-
-internal fun <T, R: Any> Collection<T>.mapTakeIfAllNotNull(op: (T) -> R?): List<R>?
-  = mapNotNull(op).takeIf { it.size == this.size }

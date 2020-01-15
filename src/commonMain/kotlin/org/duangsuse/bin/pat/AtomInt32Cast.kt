@@ -4,6 +4,9 @@ import org.duangsuse.bin.*
 
 abstract class Int32Pattern: Pattern.Sized<Int32>
 
+val int8Cnt: Pattern.Sized<Cnt> = int8.widen8()
+val int16Cnt: Pattern.Sized<Cnt> = int16.widen16()
+
 // NOTE: widen/narrow operations are suffixed with bit-width, since generics overloading conflict
 
 fun Pattern.Sized<Int8>.widen8() = object: Int32Pattern() {

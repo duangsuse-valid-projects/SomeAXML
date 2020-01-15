@@ -13,12 +13,13 @@ open class AnySeq<TUP: Tuple<Any>>(creator: Producer<TUP>, vararg items: Pattern
 open class AnyRepeat(sizer: Pattern<Cnt>, item: Pattern<Any>): Repeat<Any>(sizer, item)
 open class AnyCond(flag: Pattern<Idx>, vararg conditions: Pattern<Any>): Cond<Any>(flag, *conditions)
 
-inline fun <reified T> @receiver:Suppress("unused") Tuple<*>.indexOf(idx: Idx) = CastIndex<T>(idx)
 class CastIndex<T>(private val idx: Idx) {
   @Suppress("UNCHECKED_CAST")
   operator fun getValue(self: Tuple<*>, _p: KProperty<*>): T = self[idx] as T
   operator fun setValue(self: Tuple<Any>, _p: KProperty<*>, value: T) { self[idx] = value as Any }
 }
+
+inline fun <reified T> @receiver:Suppress("unused") Tuple<*>.indexOf(idx: Idx) = CastIndex<T>(idx)
 
 inline operator fun <reified T: Any> Pattern<T>.unaryPlus() = object: Pattern<Any> {
   override fun read(s: Reader): Any = this@unaryPlus.read(s)

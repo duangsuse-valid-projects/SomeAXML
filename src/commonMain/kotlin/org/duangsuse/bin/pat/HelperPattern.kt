@@ -42,16 +42,11 @@ open class EndianSwitch<T>(item: Pattern<T>, private val newEndian: ByteOrder): 
   open class LittleEndian<T>(item: Pattern<T>): EndianSwitch<T>(item, ByteOrder.LittleEndian)
 }
 
-fun <T> Pattern<T>.littleEndian() = EndianSwitch.LittleEndian(this)
-fun <T> Pattern<T>.bigEndian() = EndianSwitch.BigEndian(this)
-
 /** Make stream aligned when read(pre)/write(post) */
 class Aligned<T>(private val alignment: Cnt, item: Pattern<T>): PrePost<T>(item) {
   override fun onReadPre(s: Reader) { s.makeAligned(alignment) }
   override fun onWritePost(s: Writer) { s.makeAligned(alignment) }
 }
-
-fun <T> Pattern<T>.aligned(n: Cnt) = Aligned(n, this)
 
 /** Some complex pattern that have sub-patterns depend on actual data stream */
 open class Contextual<A, B>(private val head: Pattern<A>, private val body: (A) -> Pattern<B>): Pattern<Tuple2<A, B>> {
@@ -66,9 +61,30 @@ open class Contextual<A, B>(private val head: Pattern<A>, private val body: (A) 
   }
 }
 
-infix fun <A, B> Pattern<A>.contextual(body: (A) -> Pattern<B>) = Contextual(this, body)
-
 // atomic helper patterns that should not inherited in like companion objects
+fun <T> mapped(item: Pattern.Sized<T>, map: Map<T, T>) = object: Pattern.Sized<T> {
+  private val revMap = map.reverseMap()
+  override fun read(s: Reader): T = map.getValue(item.read(s))
+  override fun write(s: Writer, x: T): Unit = item.write(s, revMap.getValue(x))
+  override val size: Cnt? get() = item.size
+}
+fun <BIT_FL: BitFlags> bitFlags(creator: (Int32) -> BIT_FL) = object: Pattern.Sized<BIT_FL> {
+  override fun read(s: Reader): BIT_FL = creator(s.readInt32())
+  override fun write(s: Writer, x: BIT_FL): Unit = s.writeInt32(x.toInt())
+  override val size: Cnt = Int32.SIZE_BYTES
+}
+fun <T> offset(n: Cnt, item: Pattern<T>) = object: Pattern.Sized<Tuple2<Buffer, T>> {
+  override fun read(s: Reader): Tuple2<Buffer, T> {
+    val savedBuffer = s.asNat8Reader().takeByte(n)
+    return Tuple2(savedBuffer, item.read(s))
+  }
+  override fun write(s: Writer, x: Tuple2<Buffer, T>) {
+    s.asNat8Writer().writeFrom(x.first)
+    item.write(s, x.second)
+  }
+  override val size: Cnt? get() = (item as? Pattern.Sized)?.size?.plus(n)
+}
+
 inline fun <reified T> Pattern<T>.array(init: T, sizer: Pattern<Cnt>): Pattern<Array<T>>
   = object: Pattern<Array<T>> {
   override fun read(s: Reader): Array<T> {
@@ -91,44 +107,4 @@ fun Pattern<Cnt>.sizedByteArray() = object: Pattern<ByteArray> {
     this@sizedByteArray.write(s, x.size)
     s.asNat8Writer().writeFrom(x)
   }
-}
-
-fun <BIT_FL: BitFlags> bitFlags(creator: (Int32) -> BIT_FL) = object: Pattern.Sized<BIT_FL> {
-  override fun read(s: Reader): BIT_FL = creator(s.readInt32())
-  override fun write(s: Writer, x: BIT_FL): Unit = s.writeInt32(x.toInt())
-  override val size: Cnt = Int32.SIZE_BYTES
-}
-fun <T> mapped(item: Pattern.Sized<T>, map: Map<T, T>) = object: Pattern.Sized<T> {
-  private val revMap = map.reverseMap()
-  override fun read(s: Reader): T = map.getValue(item.read(s))
-  override fun write(s: Writer, x: T): Unit = item.write(s, revMap.getValue(x))
-  override val size: Cnt? get() = item.size
-}
-
-/** Pseudo pattern, specify known constants not related to actual data stream
- *
- * This pattern __WILL NOT__ modify actual data stream */
-fun <T> T.statically() = object: Pattern.Sized<T> {
-  override fun read(s: Reader): T = this@statically
-  override fun write(s: Writer, x: T) {}
-  override val size: Cnt = 0
-}
-
-fun <T> Pattern.Sized<T>.magic(value: T, onError: (T) -> Nothing) = object: Pattern.Sized<T> {
-  override fun read(s: Reader): T = this@magic.read(s).also { if (it != value) onError(it) }
-  override fun write(s: Writer, x: T) { this@magic.write(s, x) }
-  override val size: Cnt? get() = this@magic.size
-}
-infix fun <T> Pattern.Sized<T>.magic(value: T) = magic(value) { error("Unknown magic <$it>") }
-
-fun <T> offset(n: Cnt, item: Pattern<T>) = object: Pattern.Sized<Tuple2<Buffer, T>> {
-  override fun read(s: Reader): Tuple2<Buffer, T> {
-    val savedBuffer = s.asNat8Reader().takeByte(n)
-    return Tuple2(savedBuffer, item.read(s))
-  }
-  override fun write(s: Writer, x: Tuple2<Buffer, T>) {
-    s.asNat8Writer().writeFrom(x.first)
-    item.write(s, x.second)
-  }
-  override val size: Cnt? get() = (item as? Pattern.Sized)?.size?.plus(n)
 }
