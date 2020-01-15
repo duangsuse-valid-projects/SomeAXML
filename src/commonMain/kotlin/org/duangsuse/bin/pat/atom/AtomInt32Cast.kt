@@ -1,6 +1,7 @@
-package org.duangsuse.bin.pat
+package org.duangsuse.bin.pat.atom
 
 import org.duangsuse.bin.*
+import org.duangsuse.bin.pat.Pattern
 
 abstract class Int32Pattern: Pattern.Sized<Int32>
 

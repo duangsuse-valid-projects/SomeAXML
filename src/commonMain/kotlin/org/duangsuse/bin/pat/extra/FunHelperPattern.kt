@@ -1,6 +1,9 @@
-package org.duangsuse.bin.pat
+package org.duangsuse.bin.pat.extra
 
 import org.duangsuse.bin.*
+import org.duangsuse.bin.pat.BitFlags
+import org.duangsuse.bin.pat.Tuple2
+import org.duangsuse.bin.pat.Pattern
 
 // atomic helper patterns that should not inherited in like companion objects
 

@@ -1,6 +1,8 @@
-package org.duangsuse.bin.pat
+package org.duangsuse.bin.pat.extra
 
 import org.duangsuse.bin.*
+import org.duangsuse.bin.pat.Tuple2
+import org.duangsuse.bin.pat.Pattern
 
 /** Add argument/return listen for [Pattern] read/write */
 abstract class PrePost<T>(private val item: Pattern<T>): Pattern.Sized<T> {
