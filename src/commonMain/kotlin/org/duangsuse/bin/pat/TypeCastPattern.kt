@@ -1,9 +1,6 @@
 package org.duangsuse.bin.pat
 
-import org.duangsuse.bin.Cnt
-import org.duangsuse.bin.Idx
-import org.duangsuse.bin.Reader
-import org.duangsuse.bin.Writer
+import org.duangsuse.bin.*
 import kotlin.reflect.KProperty
 
 open class AnyTuple(size: Cnt)
@@ -11,6 +8,8 @@ open class AnyTuple(size: Cnt)
   @Suppress("UNCHECKED_CAST")
   final override val items: Array<Any> = arrayOfNulls<Any>(size) as Array<Any>
 }
+
+open class AnySeq<TUP: Tuple<Any>>(creator: Producer<TUP>, vararg items: Pattern<Any>): Seq<TUP, Any>(creator, *items)
 
 inline fun <reified T> @receiver:Suppress("unused") Tuple<*>.indexOf(idx: Idx) = CastIndex<T>(idx)
 class CastIndex<T>(private val idx: Idx) {
