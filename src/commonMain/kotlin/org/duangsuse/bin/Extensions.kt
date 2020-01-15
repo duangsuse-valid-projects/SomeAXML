@@ -27,20 +27,23 @@ fun Nat8Reader.takeNat8(n: Cnt): IntArray {
   if (neg1Detect < 0) throw StreamEnd()
   else return buffer
 }
+
 fun ReadControl.makeAligned(n: Cnt) {
   val chunkPosition = (position % n)
   if (chunkPosition != 0) skip(n - chunkPosition)
 }
+fun Writer.makeAligned(n: Cnt) {
+  val chunkPosition = (count % n)
+  if (chunkPosition != 0) writePadding(n - chunkPosition)
+}
+
 fun DataWriter.writePadding(n: Cnt, x: Nat8 = 0x00) {
   repeat(n) { writeNat8(x) }
 }
 fun Nat8Writer.writePadding(n: Cnt, x: Nat8 = 0x00) {
   repeat(n) { write(x) }
 }
-fun Writer.makeAligned(n: Cnt) {
-  val chunkPosition = (count % n)
-  if (chunkPosition != 0) writePadding(n - chunkPosition)
-}
+
 
 fun ByteOrdered.makeBigEndian() { byteOrder = ByteOrder.BigEndian }
 fun ByteOrdered.makeLittleEndian() { byteOrder = ByteOrder.LittleEndian }

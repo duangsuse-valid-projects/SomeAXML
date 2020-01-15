@@ -45,6 +45,14 @@ open class EndianSwitch<T>(item: Pattern<T>, private val newEndian: ByteOrder): 
 fun <T> Pattern<T>.littleEndian() = EndianSwitch.LittleEndian(this)
 fun <T> Pattern<T>.bigEndian() = EndianSwitch.BigEndian(this)
 
+/** Make stream aligned when read(pre)/write(post) */
+class Aligned<T>(private val alignment: Cnt, item: Pattern<T>): PrePost<T>(item) {
+  override fun onReadPre(s: Reader) { s.makeAligned(alignment) }
+  override fun onWritePost(s: Writer) { s.makeAligned(alignment) }
+}
+
+fun <T> Pattern<T>.aligned(n: Cnt) = Aligned(n, this)
+
 inline fun <reified T> Pattern<T>.array(init: T, sizer: Pattern<Cnt>): Pattern<Array<T>>
   = object: Pattern<Array<T>> {
   override fun read(s: Reader): Array<T> {
