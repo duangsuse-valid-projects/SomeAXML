@@ -45,9 +45,3 @@ open class DoubleTuple(size: Cnt, init: IndexedProducer<Double> = {0.0})
   : Tuple<Double>(size) {
   final override val items: Array<Double> = Array(size, init)
 }
-
-open class AnyTuple(size: Cnt)
-  : Tuple<Any>(size) {
-  @Suppress("UNCHECKED_CAST")
-  final override val items: Array<Any> = arrayOfNulls<Any>(size) as Array<Any>
-}

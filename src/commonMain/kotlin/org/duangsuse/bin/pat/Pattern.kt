@@ -28,12 +28,11 @@ open class Seq<TUP: Tuple<T>, T>(private val allocator: Allocator<TUP>, private 
 }
 /** Repeat of one substructure [item], with size depending on actual data stream [sizer] */
 open class Repeat<T: Any>(private val sizer: Pattern<Cnt>, private val item: Pattern<T>): Pattern<Array<T>> {
-  @Suppress("UNCHECKED_CAST")
   override fun read(s: Reader): Array<T> {
     val size = sizer.read(s)
     val ary = arrayOfNulls<Any>(size)
     for (index in ary.indices) ary[index] = item.read(s)
-    return ary as Array<T>
+    @Suppress("unchecked_cast") return ary as Array<T>
   }
   override fun write(s: Writer, x: Array<T>) {
     sizer.write(s, x.size)
