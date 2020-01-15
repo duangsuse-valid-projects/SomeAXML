@@ -11,6 +11,8 @@ import org.duangsuse.bin.indices
 /** Creates an object like [Tuple] with given size */
 typealias Allocator<T> = (Cnt) -> T
 
+data class Tuple2<A, B>(var first: A, var second: B)
+
 /** Tuple is an array-like object with `val (x0, x1) = (tup)` destruct and index access support
  *
  * + tuple items are stored in array [items], since Kotlin does not support reified type parameters in class,

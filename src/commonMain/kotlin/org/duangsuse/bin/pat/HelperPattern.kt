@@ -54,12 +54,12 @@ class Aligned<T>(private val alignment: Cnt, item: Pattern<T>): PrePost<T>(item)
 fun <T> Pattern<T>.aligned(n: Cnt) = Aligned(n, this)
 
 /** Some complex pattern that have sub-patterns depend on actual data stream */
-open class Contextual<A, B>(private val head: Pattern<A>, private val body: (A) -> Pattern<B>): Pattern<Pair<A, B>> {
-  override fun read(s: Reader): Pair<A, B> {
+open class Contextual<A, B>(private val head: Pattern<A>, private val body: (A) -> Pattern<B>): Pattern<Tuple2<A, B>> {
+  override fun read(s: Reader): Tuple2<A, B> {
     val dataDep = head.read(s)
-    return Pair(dataDep, body(dataDep).read(s))
+    return Tuple2(dataDep, body(dataDep).read(s))
   }
-  override fun write(s: Writer, x: Pair<A, B>) {
+  override fun write(s: Writer, x: Tuple2<A, B>) {
     val (dataDep, state) = x
     head.write(s, dataDep)
     body(dataDep).write(s, state)
@@ -111,12 +111,12 @@ fun <T> Pattern.Sized<T>.magic(value: T, onError: (T) -> Nothing) = object: Patt
 }
 infix fun <T> Pattern.Sized<T>.magic(value: T) = magic(value) { error("Unknown magic <$it>") }
 
-fun <T> offset(n: Cnt, item: Pattern<T>) = object: Pattern.Sized<Pair<Buffer, T>> {
-  override fun read(s: Reader): Pair<Buffer, T> {
+fun <T> offset(n: Cnt, item: Pattern<T>) = object: Pattern.Sized<Tuple2<Buffer, T>> {
+  override fun read(s: Reader): Tuple2<Buffer, T> {
     val savedBuffer = s.asNat8Reader().takeByte(n)
-    return Pair(savedBuffer, item.read(s))
+    return Tuple2(savedBuffer, item.read(s))
   }
-  override fun write(s: Writer, x: Pair<Buffer, T>) {
+  override fun write(s: Writer, x: Tuple2<Buffer, T>) {
     s.asNat8Writer().writeFrom(x.first)
     item.write(s, x.second)
   }
