@@ -2,7 +2,7 @@ package org.duangsuse.bin.pat.atom
 
 import org.duangsuse.bin.*
 import org.duangsuse.bin.pat.Pattern
-import org.duangsuse.bin.pat.uExt
+import org.duangsuse.bin.uExt
 
 val nat8 = object: Pattern.Sized<Nat8> {
   override fun read(s: Reader): Nat8 = s.readNat8()

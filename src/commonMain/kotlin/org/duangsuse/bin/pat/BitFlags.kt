@@ -2,6 +2,8 @@ package org.duangsuse.bin.pat
 
 import org.duangsuse.bin.Idx
 import org.duangsuse.bin.Int32
+import org.duangsuse.bin.bitSubtract
+import org.duangsuse.bin.bitUnion
 import kotlin.reflect.KProperty
 
 /** Bit flag index are counted from rightmost bit (BigEndian) */

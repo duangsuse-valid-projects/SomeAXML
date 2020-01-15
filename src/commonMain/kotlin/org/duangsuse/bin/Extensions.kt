@@ -52,6 +52,19 @@ fun DataWriter.writePadding(n: Cnt, x: Nat8 = 0x00) {
 fun ByteOrdered.makeBigEndian() { byteOrder = ByteOrder.BigEndian }
 fun ByteOrdered.makeLittleEndian() { byteOrder = ByteOrder.LittleEndian }
 
+//// Bitwise operation
+
+/** Perform unsigned extension, left-padding with zeros without moving its sign bit */
+fun Int16.uExt(): Int32 = if (this < 0) {
+  0x0001_0000 + this
+} else this.toInt()
+fun Int32.uExt(): Int64 = if (this < 0) {
+  0x0000_0001_0000_0000L + this
+} else this.toLong()
+
+internal fun Int.bitUnion(other: Int): Int = or(other)
+internal fun Int.bitSubtract(mask: Int): Int = and(mask.inv())
+
 //// Collections & Maps
 
 fun Iterable<Nat8>.toArray(n: Cnt): IntArray {
