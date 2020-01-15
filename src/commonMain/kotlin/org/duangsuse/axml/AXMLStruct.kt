@@ -1,7 +1,9 @@
 package org.duangsuse.axml
 
 import org.duangsuse.bin.Int32
+import org.duangsuse.bin.pat.Seq
 import org.duangsuse.bin.pat.Tuple
+import org.duangsuse.bin.pat.int32
 
 // AXML = Header StringChunk ResourceChunk XmlContent
 // Header = (int32 fileMagic) (int32 fileSize)
@@ -17,4 +19,5 @@ class Header: Tuple<Int32>(2) {
   override val items: Array<Int32> = Array(size) {0}
   var fileMagic: Int32 by index(0)
   var fileSize: Int32 by index(1)
+  companion object: Seq<Header, Int32>(::Header, int32, int32)
 }

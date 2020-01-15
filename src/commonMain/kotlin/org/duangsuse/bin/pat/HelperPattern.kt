@@ -53,7 +53,7 @@ class Aligned<T>(private val alignment: Cnt, item: Pattern<T>): PrePost<T>(item)
 
 fun <T> Pattern<T>.aligned(n: Cnt) = Aligned(n, this)
 
-
+// atomic helper patterns that should not inherited in like companion objects
 inline fun <reified T> Pattern<T>.array(init: T, sizer: Pattern<Cnt>): Pattern<Array<T>>
   = object: Pattern<Array<T>> {
   override fun read(s: Reader): Array<T> {
