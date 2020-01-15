@@ -37,8 +37,7 @@ abstract class Tuple<E>(override val size: Cnt): Sized {
     else (size == other.size) && items.contentEquals(other.items)
   }
   override fun hashCode(): Int  = 31 * size + items.contentHashCode()
-  override fun toString(): String = "(${describe()})"
-  private fun describe(): String = items.joinToString(", ")
+  override fun toString(): String = "(${items.joinToString(", ")})"
 }
 operator fun <E> Tuple<E>.component1() = this[0]
 operator fun <E> Tuple<E>.component2() = this[1]
