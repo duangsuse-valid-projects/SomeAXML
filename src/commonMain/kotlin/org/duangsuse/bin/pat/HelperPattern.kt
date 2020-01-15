@@ -38,8 +38,8 @@ open class EndianSwitch<T>(item: Pattern<T>, private val newEndian: ByteOrder): 
   override fun onWritePost(s: Writer) {
     s.byteOrder = oldByteOrder
   }
-  class BigEndian<T>(item: Pattern<T>): EndianSwitch<T>(item, ByteOrder.BigEndian)
-  class LittleEndian<T>(item: Pattern<T>): EndianSwitch<T>(item, ByteOrder.LittleEndian)
+  open class BigEndian<T>(item: Pattern<T>): EndianSwitch<T>(item, ByteOrder.BigEndian)
+  open class LittleEndian<T>(item: Pattern<T>): EndianSwitch<T>(item, ByteOrder.LittleEndian)
 }
 
 fun <T> Pattern<T>.littleEndian() = EndianSwitch.LittleEndian(this)
@@ -52,6 +52,7 @@ class Aligned<T>(private val alignment: Cnt, item: Pattern<T>): PrePost<T>(item)
 }
 
 fun <T> Pattern<T>.aligned(n: Cnt) = Aligned(n, this)
+
 
 inline fun <reified T> Pattern<T>.array(init: T, sizer: Pattern<Cnt>): Pattern<Array<T>>
   = object: Pattern<Array<T>> {

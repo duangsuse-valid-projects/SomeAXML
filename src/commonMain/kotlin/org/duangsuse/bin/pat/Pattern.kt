@@ -10,7 +10,7 @@ interface Pattern<T> {
 }
 
 /** Sequential binary pattern like C's `struct` */
-class Seq<TUP: Tuple<T>, T>(private val allocator: Allocator<TUP>, private vararg val items: Pattern<T>): Pattern.Sized<TUP> {
+open class Seq<TUP: Tuple<T>, T>(private val allocator: Allocator<TUP>, private vararg val items: Pattern<T>): Pattern.Sized<TUP> {
   constructor(creator: Producer<TUP>, vararg items: Pattern<T>): this({ _ -> creator() }, *items)
   override fun read(s: Reader): TUP {
     val tuple = allocator(items.size)
@@ -27,7 +27,7 @@ class Seq<TUP: Tuple<T>, T>(private val allocator: Allocator<TUP>, private varar
       ?.sum()
 }
 /** Repeat of one substructure [item], with size depending on actual data stream [sizer] */
-class Repeat<T: Any>(private val sizer: Pattern<Cnt>, private val item: Pattern<T>): Pattern<Array<T>> {
+open class Repeat<T: Any>(private val sizer: Pattern<Cnt>, private val item: Pattern<T>): Pattern<Array<T>> {
   @Suppress("UNCHECKED_CAST")
   override fun read(s: Reader): Array<T> {
     val size = sizer.read(s)
@@ -41,7 +41,7 @@ class Repeat<T: Any>(private val sizer: Pattern<Cnt>, private val item: Pattern<
   }
 }
 /** Conditional sub-patterns [conditions] like C's `union` can be decided depending on actual data stream with [flag] */
-class Cond<T>(private val flag: Pattern<Idx>, private vararg val conditions: Pattern<T>): Pattern.Sized<Pair<Idx, T>> {
+open class Cond<T>(private val flag: Pattern<Idx>, private vararg val conditions: Pattern<T>): Pattern.Sized<Pair<Idx, T>> {
   override fun read(s: Reader): Pair<Idx, T> {
     val caseNo = flag.read(s)
     return Pair(caseNo, conditions[caseNo].read(s))
