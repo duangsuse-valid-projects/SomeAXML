@@ -32,4 +32,5 @@ class Writer(private val w: Nat8Writer): org.duangsuse.bin.Writer {
 
   override fun close() { (w as Closeable).close() }
   override fun flush() { (w as Flushable).flush() }
+  override fun asNat8Writer(): Nat8Writer = w
 }

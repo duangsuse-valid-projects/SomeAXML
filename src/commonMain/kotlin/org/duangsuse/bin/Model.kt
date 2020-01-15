@@ -16,8 +16,12 @@ interface Nat8Writer {
   fun writeFrom(buffer: Buffer, indices: IdxRange)
 }
 
-interface Reader: ReadControl, DataReader
-interface Writer: WriteControl, DataWriter
+interface Reader: ReadControl, DataReader {
+  fun asNat8Reader(): Nat8Reader
+}
+interface Writer: WriteControl, DataWriter {
+  fun asNat8Writer(): Nat8Writer
+}
 
 interface MarkReset {
   fun mark() fun reset()

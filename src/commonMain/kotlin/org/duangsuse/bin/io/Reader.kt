@@ -35,4 +35,5 @@ class Reader(private val r: Nat8Reader): org.duangsuse.bin.Reader {
   override fun mark() { (r as MarkReset).mark(); mPositionStack.add(mPosition) }
   override fun reset() { (r as MarkReset).reset(); mPosition = mPositionStack.removeLast() }
   override fun close() { (r as Closeable).close() }
+  override fun asNat8Reader(): Nat8Reader = r
 }
