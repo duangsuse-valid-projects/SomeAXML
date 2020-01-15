@@ -18,6 +18,10 @@ abstract class AbstractWriterTests(private val s: Writer) {
     writePart() // zeros are removed since Python's package struct writes no padding outputting big endian
     assertEquals(fileBytes.drop(16).take(16).removeZeros(), bytes.take(16).removeZeros())
   }
+  @Test fun count() {
+    writePart()
+    assertEquals(16, s.count)
+  }
   private fun List<Byte>.removeZeros() = filterNot { it == 0x00.toByte() }
   @Test fun byteOrder() {
     s.makeLittleEndian()
