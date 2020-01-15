@@ -13,28 +13,30 @@ interface Pattern<T> {
 class Seq<TUP: Tuple<T>, T>(private val allocator: Allocator<TUP>, private vararg val items: Pattern<T>): Pattern.Sized<TUP> {
   constructor(creator: Producer<TUP>, vararg items: Pattern<T>): this({ _ -> creator() }, *items)
   override fun read(s: Reader): TUP {
-    val result = allocator(items.size)
-    for ((index, item) in items.withIndex()) result[index] = item.read(s)
-    return result
+    val tuple = allocator(items.size)
+    for ((index, item) in items.withIndex()) tuple[index] = item.read(s)
+    return tuple
   }
   override fun write(s: Writer, x: TUP) {
     for ((index, item) in items.withIndex()) item.write(s, x[index])
   }
   override val size: Cnt?
     get() = items.toList()
-      .takeIfAllIsInstance<Pattern.Sized<TUP>>()
+      .takeIfAllIsInstance<Pattern.Sized<T>>()
       ?.mapTakeIfAllNotNull(OptionalSized::size)
       ?.sum()
 }
-/** Repeat of one substructure [item], with size depending on actual data stream [readSize] */
-class Repeat<T: Any>(private val item: Pattern<T>, private val readSize: ActionOn<Reader, Cnt>): Pattern<Array<T>> {
+/** Repeat of one substructure [item], with size depending on actual data stream [sizer] */
+class Repeat<T: Any>(private val sizer: Pattern<Cnt>, private val item: Pattern<T>): Pattern<Array<T>> {
   @Suppress("UNCHECKED_CAST")
   override fun read(s: Reader): Array<T> {
-    val result = arrayOfNulls<Any?>(s.readSize())
-    for (index in result.indices) result[index] = item.read(s)
-    return result as Array<T>
+    val size = sizer.read(s)
+    val ary = arrayOfNulls<Any>(size)
+    for (index in ary.indices) ary[index] = item.read(s)
+    return ary as Array<T>
   }
   override fun write(s: Writer, x: Array<T>) {
+    sizer.write(s, x.size)
     for (element in x) item.write(s, element)
   }
 }
