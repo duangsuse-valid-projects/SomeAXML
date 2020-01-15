@@ -53,6 +53,21 @@ class Aligned<T>(private val alignment: Cnt, item: Pattern<T>): PrePost<T>(item)
 
 fun <T> Pattern<T>.aligned(n: Cnt) = Aligned(n, this)
 
+/** Some complex pattern that have sub-patterns depend on actual data stream */
+open class Contextual<A, B>(private val head: Pattern<A>, private val body: (A) -> Pattern<B>): Pattern<Pair<A, B>> {
+  override fun read(s: Reader): Pair<A, B> {
+    val dataDep = head.read(s)
+    return Pair(dataDep, body(dataDep).read(s))
+  }
+  override fun write(s: Writer, x: Pair<A, B>) {
+    val (dataDep, state) = x
+    head.write(s, dataDep)
+    body(dataDep).write(s, state)
+  }
+}
+
+infix fun <A, B> Pattern<A>.contextual(body: (A) -> Pattern<B>) = Contextual(this, body)
+
 // atomic helper patterns that should not inherited in like companion objects
 inline fun <reified T> Pattern<T>.array(init: T, sizer: Pattern<Cnt>): Pattern<Array<T>>
   = object: Pattern<Array<T>> {
