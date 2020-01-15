@@ -5,10 +5,10 @@ import org.duangsuse.bin.*
 //// Atom & BitFlags
 
 /** Perform unsigned extension, left-padding with zeros without moving its sign bit */
-internal fun Int16.uExt(): Int32 = if (this < 0) {
+fun Int16.uExt(): Int32 = if (this < 0) {
   0x0001_0000 + this
 } else this.toInt()
-internal fun Int32.uExt(): Int64 = if (this < 0) {
+fun Int32.uExt(): Int64 = if (this < 0) {
   0x0000_0001_0000_0000L + this
 } else this.toLong()
 
@@ -40,14 +40,6 @@ fun <T> Pattern.Sized<T>.magic(value: T, onError: (T) -> Nothing) = object: Patt
   override val size: Cnt? get() = this@magic.size
 }
 infix fun <T> Pattern.Sized<T>.magic(value: T) = magic(value) { error("Unknown magic <$it>") }
-
-//// Pattern
-
-internal inline fun <reified T> Collection<*>.takeIfAllIsInstance(): List<T>?
-  = filterIsInstance<T>().takeIf { it.size == this.size }
-
-internal fun <T, R: Any> Collection<T>.mapTakeIfAllNotNull(op: (T) -> R?): List<R>?
-  = mapNotNull(op).takeIf { it.size == this.size }
 
 //// Tuple
 

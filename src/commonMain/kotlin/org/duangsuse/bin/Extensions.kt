@@ -1,16 +1,22 @@
 package org.duangsuse.bin
 
+//// Sized & Idx
+
 inline val Sized.lastIndex: Idx get() = size.dec()
 inline val Sized.indices: IdxRange get() = 0..lastIndex
 
 inline val IdxRange.size: Cnt get() = (last-first).inc()
 infix fun Idx.untilSize(size: Cnt): IdxRange = this..(this+size).dec()
 
+//// MarkRest & Closeable
+
 inline fun <R> MarkReset.positional(op: Producer<R>): R
   = try { mark(); op() } finally { reset() }
 
 inline fun <R> Closeable.use(op: Producer<R>): R
   = try { op() } finally { close() }
+
+//// Nat8Reader
 
 fun Nat8Reader.takeByte(n: Cnt): Buffer {
   val buffer = Buffer(n)
@@ -28,6 +34,8 @@ fun Nat8Reader.takeNat8(n: Cnt): IntArray {
   else return buffer
 }
 
+//// ReadControl & Writer & ByteOrder & ...
+
 fun ReadControl.makeAligned(n: Cnt) {
   val chunkPosition = (position % n)
   if (chunkPosition != 0) skip(n - chunkPosition)
@@ -44,10 +52,11 @@ fun Nat8Writer.writePadding(n: Cnt, x: Nat8 = 0x00) {
   repeat(n) { write(x) }
 }
 
-
 fun ByteOrdered.makeBigEndian() { byteOrder = ByteOrder.BigEndian }
 fun ByteOrdered.makeLittleEndian() { byteOrder = ByteOrder.LittleEndian }
 fun ByteOrdered.makeNativeEndian() { byteOrder = nativeOrder }
+
+//// Collections & Maps
 
 fun Iterable<Nat8>.toArray(n: Cnt): IntArray {
   val buffer = IntArray(n)
@@ -58,5 +67,12 @@ fun ByteIterator.widenIterator(): IntIterator = object: IntIterator() {
   override fun hasNext(): Boolean = this@widenIterator.hasNext()
   override fun nextInt(): Int = this@widenIterator.nextByte().toInt()
 }
+
 fun <E> MutableList<E>.removeLast(): E = removeAt(lastIndex)
 fun <K, V> Map<K, V>.reverseMap(): Map<V, K> = keys.map { k -> getValue(k) to k }.toMap()
+
+internal inline fun <reified T> Collection<*>.takeIfAllIsInstance(): List<T>?
+  = filterIsInstance<T>().takeIf { it.size == this.size }
+
+internal fun <T, R: Any> Collection<T>.mapTakeIfAllNotNull(op: (T) -> R?): List<R>?
+  = mapNotNull(op).takeIf { it.size == this.size }
