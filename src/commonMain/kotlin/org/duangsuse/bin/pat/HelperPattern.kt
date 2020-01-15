@@ -49,9 +49,9 @@ inline fun <reified T> Pattern<T>.array(init: T, sizer: Pattern<Cnt>): Pattern<A
   = object: Pattern<Array<T>> {
   override fun read(s: Reader): Array<T> {
     val size = sizer.read(s)
-    val result: Array<T> = Array(size) {init}
-    for (i in 0 untilSize size) result[i] = this@array.read(s)
-    return result
+    val ary: Array<T> = Array(size) {init}
+    for (i in ary.indices) ary[i] = this@array.read(s)
+    return ary
   }
   override fun write(s: Writer, x: Array<T>) {
     sizer.write(s, x.size)
