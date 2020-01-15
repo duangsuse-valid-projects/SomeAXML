@@ -78,4 +78,3 @@ fun <T> mapped(item: Pattern.Sized<T>, map: Map<T, T>) = object: Pattern.Sized<T
   override fun write(s: Writer, x: T): Unit = item.write(s, revMap.getValue(x))
   override val size: Cnt? get() = item.size
 }
-
