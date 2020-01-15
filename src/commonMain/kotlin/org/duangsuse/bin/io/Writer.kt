@@ -22,7 +22,7 @@ class Writer(private val w: Nat8Writer): org.duangsuse.bin.Writer {
      i: I) {
     val bytes = nat8sFromInteger(n, byte_left, shl, select, i)
     if (shouldSwap) {
-      val revBuffer = bytes.toArray(n); revBuffer.reverse()
+      val revBuffer = bytes.asIterable().toArray(n); revBuffer.reverse()
       for (b in revBuffer) writeNat8(b)
     } else {
       for (b in bytes) writeNat8(b)

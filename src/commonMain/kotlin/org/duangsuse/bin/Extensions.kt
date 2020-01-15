@@ -46,7 +46,7 @@ fun ByteOrdered.makeBigEndian() { byteOrder = ByteOrder.BigEndian }
 fun ByteOrdered.makeLittleEndian() { byteOrder = ByteOrder.LittleEndian }
 fun ByteOrdered.makeNativeEndian() { byteOrder = nativeOrder }
 
-fun Sequence<Nat8>.toArray(n: Cnt): IntArray {
+fun Iterable<Nat8>.toArray(n: Cnt): IntArray {
   val buffer = IntArray(n)
   for ((i, b) in this.withIndex()) buffer[i] = b
   return buffer
@@ -56,4 +56,4 @@ fun ByteIterator.widenIterator(): IntIterator = object: IntIterator() {
   override fun nextInt(): Int = this@widenIterator.nextByte().toInt()
 }
 fun <E> MutableList<E>.removeLast(): E = removeAt(lastIndex)
-fun <K, V> Map<K, V>.reverseMap(): Map<V, K> = keys.map { k -> this.getValue(k) to k }.toMap()
+fun <K, V> Map<K, V>.reverseMap(): Map<V, K> = keys.map { k -> getValue(k) to k }.toMap()
