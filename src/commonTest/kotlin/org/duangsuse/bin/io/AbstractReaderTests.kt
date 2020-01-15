@@ -1,3 +1,5 @@
+@file:Suppress("SpellCheckingInspection")
+
 package org.duangsuse.bin.io
 
 import org.duangsuse.bin.makeAligned
