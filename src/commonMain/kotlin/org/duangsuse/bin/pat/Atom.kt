@@ -64,12 +64,10 @@ fun bytes(n: Cnt) = object: Pattern<ByteArray> {
   override fun write(s: Writer, x: ByteArray): Unit = s.asNat8Writer().writeFrom(x)
 }
 
-const val signBit16 = 0x0000_8000
-const val signBit32 = 0x8000_0000L
 /** Perform unsigned extension, left-padding with zeros without moving its sign bit */
 internal fun Int16.uExt(): Int32 = if (this < 0) {
-  signBit16.or(Int16.MAX_VALUE.minus(this).inv())
+  0x0001_0000 + this
 } else this.toInt()
 internal fun Int32.uExt(): Int64 = if (this < 0) {
-  signBit32.or(Int32.MAX_VALUE.toLong().minus(this).inv())
+  0x0000_0001_0000_0000L + this
 } else this.toLong()
