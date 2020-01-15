@@ -72,3 +72,9 @@ operator fun Pattern<Nothing>.unaryPlus() = object: Pattern<Any> {
   override fun read(s: Reader): Nothing = this@unaryPlus.read(s)
   override fun write(s: Writer, x: Any) = impossible()
 }
+
+/** Keep original array for __ALL BYTES REST__ in stream, may used for partial data extracting */
+object Keep: Pattern<ByteArray> {
+  override fun read(s: Reader): ByteArray = s.asNat8Reader().takeByte(s.estimate)
+  override fun write(s: Writer, x: ByteArray): Unit = s.asNat8Writer().writeFrom(x)
+}

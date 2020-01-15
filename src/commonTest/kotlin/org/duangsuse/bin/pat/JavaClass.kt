@@ -18,21 +18,22 @@ private val u4 = nat32
 typealias U8 = Int64
 private val u8 = int64
 
-class ClassFile: AnyTuple(3) {
+class ClassFile: AnyTuple(4) {
   companion object: BigEndian<ClassFile>(Seq(::ClassFile,
     +(u4 magic 0xcafebabeL),
     +Version,
-    +ConstantInfo.array(PAIR_NIL, u2 padding (-1))
+    +ConstantInfo.array(PAIR_NIL, u2 padding (-1)),
+    +Keep // TODO implement rest
   ))
   class Version: IntTuple(2) {
     companion object: Seq<Version, Nat16>(::Version,
       u2, u2)
-    val minorVersion by index(0)
-    val majorVersion by index(1)
+    var minorVersion by index(0)
+    var majorVersion by index(1)
   }
   var magic by indexOf<U4>(0)
-  var version by indexOf<Version>(1)
-  var constants by indexOf<Array<Pair<Idx, ConstantInfo>>>(2)
+  val version by indexOf<Version>(1)
+  val constants by indexOf<Array<Pair<Idx, ConstantInfo>>>(2)
 }
 val PAIR_NIL: Pair<Idx, Any> = Pair(-1, 0)
 
