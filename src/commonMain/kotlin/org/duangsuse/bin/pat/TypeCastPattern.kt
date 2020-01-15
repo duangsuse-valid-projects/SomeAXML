@@ -10,6 +10,8 @@ open class AnyTuple(size: Cnt)
 }
 
 open class AnySeq<TUP: Tuple<Any>>(creator: Producer<TUP>, vararg items: Pattern<Any>): Seq<TUP, Any>(creator, *items)
+open class AnyRepeat(sizer: Pattern<Cnt>, item: Pattern<Any>): Repeat<Any>(sizer, item)
+open class AnyCond(flag: Pattern<Idx>, vararg conditions: Pattern<Any>): Cond<Any>(flag, *conditions)
 
 inline fun <reified T> @receiver:Suppress("unused") Tuple<*>.indexOf(idx: Idx) = CastIndex<T>(idx)
 class CastIndex<T>(private val idx: Idx) {
