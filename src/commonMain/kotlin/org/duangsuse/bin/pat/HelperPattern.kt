@@ -79,3 +79,31 @@ fun <T> mapped(item: Pattern.Sized<T>, map: Map<T, T>) = object: Pattern.Sized<T
   override fun write(s: Writer, x: T): Unit = item.write(s, revMap.getValue(x))
   override val size: Cnt? get() = item.size
 }
+
+/** Pseudo pattern, specify known constants not related to actual data stream
+ *
+ * This pattern __WILL NOT__ modify actual data stream */
+fun <T> T.statically() = object: Pattern.Sized<T> {
+  override fun read(s: Reader): T = this@statically
+  override fun write(s: Writer, x: T) {}
+  override val size: Cnt = 0
+}
+
+fun <T> Pattern.Sized<T>.magic(value: T, onError: (T) -> Nothing) = object: Pattern.Sized<T> {
+  override fun read(s: Reader): T = this@magic.read(s).also { if (it != value) onError(it) }
+  override fun write(s: Writer, x: T) { this@magic.write(s, x) }
+  override val size: Cnt? get() = this@magic.size
+}
+infix fun <T> Pattern.Sized<T>.magic(value: T) = magic(value) { error("Unknown magic <$it>") }
+
+fun <T> offset(n: Cnt, item: Pattern<T>) = object: Pattern.Sized<Pair<Buffer, T>> {
+  override fun read(s: Reader): Pair<Buffer, T> {
+    val savedBuffer = s.asNat8Reader().takeByte(n)
+    return Pair(savedBuffer, item.read(s))
+  }
+  override fun write(s: Writer, x: Pair<Buffer, T>) {
+    s.asNat8Writer().writeFrom(x.first)
+    item.write(s, x.second)
+  }
+  override val size: Cnt? get() = (item as? Pattern.Sized)?.size?.plus(n)
+}
