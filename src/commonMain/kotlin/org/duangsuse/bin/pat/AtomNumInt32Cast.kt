@@ -4,6 +4,8 @@ import org.duangsuse.bin.*
 
 abstract class Int32Pattern: Pattern.Sized<Int32>
 
+// NOTE: widen/narrow operations are suffixed with bit-width, since generics overloading conflict
+
 fun Pattern.Sized<Int8>.widen8() = object: Int32Pattern() {
   override fun read(s: Reader): Int32 = this@widen8.read(s).toInt()
   override fun write(s: Writer, x: Int32) = this@widen8.write(s, x.toByte())
