@@ -7,14 +7,15 @@ interface Estimable {
 }
 interface Nat8Reader: Estimable {
   fun read(): Nat8
-  fun readTo(buffer: Buffer)
   fun readTo(buffer: Buffer, indices: IdxRange)
 }
 interface Nat8Writer {
   fun write(x: Nat8)
-  fun writeFrom(buffer: Buffer)
   fun writeFrom(buffer: Buffer, indices: IdxRange)
 }
+
+fun Nat8Reader.readTo(buffer: Buffer) { readTo(buffer, buffer.indices) }
+fun Nat8Writer.writeFrom(buffer: Buffer) { writeFrom(buffer, buffer.indices) }
 
 interface Reader: ReadControl, DataReader {
   fun asNat8Reader(): Nat8Reader

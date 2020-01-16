@@ -35,5 +35,13 @@ class Reader(private val r: Nat8Reader): org.duangsuse.bin.Reader {
   override fun mark() { (r as MarkReset).mark(); mPositionStack.add(mPosition) }
   override fun reset() { (r as MarkReset).reset(); mPosition = mPositionStack.removeLast() }
   override fun close() { (r as Closeable).close() }
-  override fun asNat8Reader(): Nat8Reader = r
+
+  private abstract inner class AsNat8ReaderDelegate: Nat8Reader by r
+  private inner class AsNat8Reader: AsNat8ReaderDelegate() {
+    override fun read(): Nat8 = super.read().also { ++mPosition }
+    override fun readTo(buffer: Buffer, indices: IdxRange) = super.readTo(buffer, indices).also { mPosition += indices.size }
+    override fun skip(n: Cnt) = super.skip(n).also { mPosition += n }
+  }
+  private val nat8Reader by lazy(::AsNat8Reader)
+  override fun asNat8Reader(): Nat8Reader = nat8Reader
 }

@@ -73,8 +73,8 @@ fun Iterable<Nat8>.toArray(n: Cnt): IntArray {
   return buffer
 }
 
-fun <E> MutableList<E>.removeLast(): E = removeAt(lastIndex)
-fun <K, V> Map<K, V>.reverseMap(): Map<V, K> = keys.map { k -> getValue(k) to k }.toMap()
+internal fun <E> MutableList<E>.removeLast(): E = removeAt(lastIndex)
+internal fun <K, V> Map<K, V>.reverseMap(): Map<V, K> = keys.map { k -> getValue(k) to k }.toMap()
 
 internal inline fun <reified T> Collection<*>.takeIfAllIsInstance(): List<T>?
   = filterIsInstance<T>().takeIf { it.size == this.size }
@@ -84,4 +84,4 @@ internal fun <T, R: Any> Collection<T>.mapTakeIfAllNotNull(op: (T) -> R?): List<
 
 //// Functions
 
-fun impossible(): Nothing = error("impossible")
+internal fun impossible(): Nothing = error("impossible")

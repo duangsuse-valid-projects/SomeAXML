@@ -32,5 +32,12 @@ class Writer(private val w: Nat8Writer): org.duangsuse.bin.Writer {
 
   override fun close() { (w as Closeable).close() }
   override fun flush() { (w as Flushable).flush() }
-  override fun asNat8Writer(): Nat8Writer = w
+
+  private abstract inner class AsNat8WriterDelegate: Nat8Writer by w
+  private inner class AsNat8Writer: AsNat8WriterDelegate() {
+    override fun write(x: Nat8) = super.write(x).also { ++mCount }
+    override fun writeFrom(buffer: Buffer, indices: IdxRange) = super.writeFrom(buffer, indices).also { mCount += indices.size }
+  }
+  private val nat8Writer by lazy(::AsNat8Writer)
+  override fun asNat8Writer(): Nat8Writer = nat8Writer
 }
