@@ -23,6 +23,7 @@ interface Pattern<T> {
     override val size: Cnt? = (self as? Sized<*>)?.size
   }
   abstract class BySizedFully<T>(private val self: Pattern<T>): BySized<T>(self) {
-    override fun writeSize(x: T): Cnt = self.writeSize(x)
+    final override val size: Cnt? = super.size
+    final override fun writeSize(x: T): Cnt = self.writeSize(x)
   }
 }

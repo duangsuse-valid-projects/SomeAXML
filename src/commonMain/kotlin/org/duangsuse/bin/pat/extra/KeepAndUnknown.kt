@@ -10,7 +10,7 @@ object Keep: Pattern<ByteArray> {
   override fun writeSize(x: ByteArray): Cnt = x.size
 }
 
-/** [IllegalStateException] will be thrown when called */
+/** [IllegalStateException] will be thrown on called */
 object Unknown: Pattern<Nothing> {
   override fun read(s: Reader): Nothing = error("unknown data part @${s.position}")
   override fun write(s: Writer, x: Nothing) = impossible()
