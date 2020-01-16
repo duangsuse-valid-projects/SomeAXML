@@ -24,15 +24,5 @@ fun <T> T.statically() = object: Pattern.Sized<T> {
   override val size: Cnt = 0
 }
 
-fun <T> Pattern.Sized<T>.magic(value: T, onError: (T) -> Nothing) = object: Pattern.Sized<T> {
-  override fun read(s: Reader): T = this@magic.read(s).also { if (it != value) onError(it) }
-  override fun write(s: Writer, x: T) { this@magic.write(s, x) }
-  override val size: Cnt? get() = this@magic.size
-}
 infix fun <T> Pattern.Sized<T>.magic(value: T) = magic(value) { error("Unknown magic <$it>") }
-
-infix fun Pattern.Sized<Cnt>.padding(k: Int) = object: Pattern.Sized<Cnt> {
-  override fun read(s: Reader): Cnt = this@padding.read(s)+k
-  override fun write(s: Writer, x: Cnt) = this@padding.write(s, x-k)
-  override val size: Cnt? get() = this@padding.size
-}
+infix fun Pattern<Cnt>.padding(n: Int) = converted({ it + n }, { it - n })

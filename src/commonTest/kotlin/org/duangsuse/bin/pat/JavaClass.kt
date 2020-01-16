@@ -22,7 +22,7 @@ class ClassFile: AnyTuple(4) {
   companion object: BigEndian<ClassFile>(Seq(::ClassFile,
     +(u4 magic 0xcafebabeL),
     +Version,
-    +ConstantInfo.array(PAIR_NIL, u2 padding (-1)),
+    +ConstantInfo.primitiveArray(PAIR_NIL, u2 padding (-1)),
     +Keep // TODO implement rest
   ))
   class Version: IntTuple(2) {
