@@ -59,6 +59,9 @@ fun ByteOrdered.makeLittleEndian() { byteOrder = ByteOrder.LittleEndian }
 //// Bitwise operation
 
 /** Perform unsigned extension, left-padding with zeros without moving its sign bit */
+fun Int8.uExt(): Int32 = if (this < 0) {
+  0x0000_0100 + this
+} else this.toInt()
 fun Int16.uExt(): Int32 = if (this < 0) {
   0x0001_0000 + this
 } else this.toInt()
@@ -85,6 +88,13 @@ internal inline fun <reified T> Collection<*>.takeIfAllIsInstance(): List<T>?
 
 internal fun <T, R: Any> Collection<T>.mapTakeIfAllNotNull(op: (T) -> R?): List<R>?
   = mapNotNull(op).takeIf { it.size == this.size }
+
+abstract class StackMarkReset<T>: MarkReset {
+  protected abstract var position: T
+  private val stack: MutableList<T> by lazy(::mutableListOf)
+  override fun mark() { stack.add(position) }
+  override fun reset() { position = stack.removeLast() }
+}
 
 //// Functions
 

@@ -23,6 +23,6 @@ class OutStreamNat8Writer(private val out_stream: OutputStream): Nat8Writer, Flu
   override fun writeFrom(buffer: Buffer, indices: IdxRange) {
     out_stream.write(buffer, indices.first, indices.size)
   }
-  override fun close() { out_stream.close() }
   override fun flush() { out_stream.flush() }
+  override fun close() { out_stream.close() }
 }

@@ -11,7 +11,7 @@ import java.io.InputStream
 class JavaClassTests: AbstractJavaClassTests(Reader(testClassFile.byteReader())) {
   private val buffer = ByteArrayOutputStream(500)
   override val newFile: Writer = Writer(buffer.byteWriter())
-  override val newFileReader: Reader get() = Reader(buffer.toByteArray().inputStream().byteReader()) // TODO buffer input stream
+  override val newFileReader: Reader get() = Reader(buffer.toByteArray().byteReader())
   override val fileBytes: Buffer = testClassFile.readBytes()
 }
 internal val testClassFile: InputStream get() = JavaClassTests::class.java.getResourceAsStream("Tuple.class")

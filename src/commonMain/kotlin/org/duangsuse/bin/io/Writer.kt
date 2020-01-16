@@ -3,7 +3,7 @@ package org.duangsuse.bin.io
 import org.duangsuse.bin.*
 import org.duangsuse.bin.type.*
 
-class Writer(private val w: Nat8Writer): org.duangsuse.bin.Writer {
+open class Writer(private val w: Nat8Writer): org.duangsuse.bin.Writer {
   override var byteOrder: ByteOrder = LANGUAGE_ORDER
   override val count get() = mCount
   private var mCount: Cnt = 0

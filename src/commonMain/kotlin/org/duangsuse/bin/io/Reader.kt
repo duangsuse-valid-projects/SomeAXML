@@ -4,7 +4,7 @@ import org.duangsuse.bin.*
 import org.duangsuse.bin.type.*
 import org.duangsuse.bin.io.Swap.swap
 
-class Reader(private val r: Nat8Reader): org.duangsuse.bin.Reader {
+open class Reader(private val r: Nat8Reader): org.duangsuse.bin.Reader {
   override var byteOrder: ByteOrder = nativeOrder
   override val position get() = mPosition
   private var mPosition: Cnt = 0
