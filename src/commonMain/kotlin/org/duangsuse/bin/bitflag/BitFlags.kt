@@ -8,6 +8,7 @@ interface BitFlags {
   operator fun get(index: Idx): Boolean
   operator fun set(index: Idx, value: Boolean)
   fun toInt(): Int
+
   class Index(private val index: Idx) {
     operator fun getValue(self: BitFlags, _p: KProperty<*>): Boolean = self[index]
     operator fun setValue(self: BitFlags, _p: KProperty<*>, value: Boolean) { self[index] = value }

@@ -27,6 +27,7 @@ open class Seq<TUP: Tuple<T>, T>(private val allocator: Allocator<TUP>, private 
       ?.mapTakeIfAllNotNull(OptionalSized::size)
       ?.sum()
 }
+
 /** Repeat of one substructure [item], with size depending on actual data stream [sizer] */
 open class Repeat<T: Any>(private val sizer: Pattern<Cnt>, private val item: Pattern<T>): Pattern<Array<T>> {
   override fun read(s: Reader): Array<T> {
@@ -41,6 +42,7 @@ open class Repeat<T: Any>(private val sizer: Pattern<Cnt>, private val item: Pat
   }
   override fun writeSize(x: Array<T>): Cnt = sizer.writeSize(x.size) + x.map(item::writeSize).sum()
 }
+
 /** Conditional sub-patterns [conditions] like C's `union` can be decided depending on actual data stream with [flag] */
 open class Cond<T>(private val flag: Pattern<Idx>, private vararg val conditions: Pattern<T>): Pattern.Sized<Pair<Idx, T>> {
   override fun read(s: Reader): Pair<Idx, T> {

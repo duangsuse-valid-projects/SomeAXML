@@ -7,7 +7,7 @@ typealias IndexedProducer<R> = (Idx) -> R
 
 // NOTE: this is not truly "unboxed" primitive arrays, but it's easier to apply optimizations by a optimistic JVM
 //   It's important that Tuple<E> should not be defined too clearly about implementation details
-//   for large amount element storage, `Pattern.array` is provided.
+//   for large amount element storage, `Pattern.primitiveArray` is provided.
 
 // JVM Z,B,S,C,I,J,F,D
 

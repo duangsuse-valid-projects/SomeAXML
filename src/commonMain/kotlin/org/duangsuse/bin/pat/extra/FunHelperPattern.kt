@@ -9,7 +9,7 @@ import org.duangsuse.bin.type.Cnt
 
 // atomic helper patterns that should not inherited in like companion objects
 
-infix fun <T, T1> Pattern<T>.mapped(map: Map<T, T1>) = object: ConvertedPattern<T, T1>(this) {
+infix fun <T, T1> Pattern<T>.mappedBy(map: Map<T, T1>) = object: ConvertedPattern<T, T1>(this) {
   private val revMap = map.reverseMap()
   override fun from(src: T): T1 = map.getValue(src)
   override fun to(x: T1): T = revMap.getValue(x)
@@ -18,7 +18,7 @@ fun <T> Pattern<T>.magic(value: T, onError: (T) -> Nothing) = object: Pattern.By
   override fun read(s: Reader): T = this@magic.read(s).also { if (it != value) onError(it) }
   override fun write(s: Writer, x: T) { this@magic.write(s, x) }
 }
-fun <T> Pattern<T>.offset(n: Cnt) = object: Pattern.BySized<Tuple2<Buffer, T>>(this) {
+infix fun <T> Pattern<T>.offset(n: Cnt) = object: Pattern.BySized<Tuple2<Buffer, T>>(this) {
   override fun read(s: Reader): Tuple2<Buffer, T> {
     val savedBuffer = s.asNat8Reader().takeByte(n)
     return Tuple2(savedBuffer, this@offset.read(s))

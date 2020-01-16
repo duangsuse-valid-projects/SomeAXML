@@ -16,8 +16,3 @@ typealias Rat64 = Double
 
 typealias Buffer = ByteArray
 typealias Nat8Buffer = IntArray
-
-typealias Idx = Int
-typealias IdxRange = IntRange
-typealias Cnt = Int
-typealias Producer<R> = () -> R

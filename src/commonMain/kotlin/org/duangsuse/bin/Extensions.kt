@@ -1,7 +1,6 @@
 package org.duangsuse.bin
 
 import org.duangsuse.bin.type.*
-import org.duangsuse.bin.Sized
 
 //// Sized & Idx
 
@@ -28,13 +27,11 @@ fun Nat8Reader.takeByte(n: Cnt): Buffer {
   val buffer = Buffer(n)
   readTo(buffer); return buffer
 }
-fun Nat8Reader.takeNat8(n: Cnt): IntArray {
-  val buffer = IntArray(n)
+fun Nat8Reader.takeNat8(n: Cnt): Nat8Buffer {
+  val buffer = Nat8Buffer(n)
   var neg1Detect = 0
-  for (i in 0.untilSize(n)) {
-    val byte = read()
-    buffer[i] = byte
-    neg1Detect = neg1Detect or byte
+  for (i in 0 until n) {
+    buffer[i] = read().also { neg1Detect = neg1Detect or it }
   }
   if (neg1Detect < 0) throw StreamEnd()
   else return buffer
@@ -74,8 +71,8 @@ internal fun Int.bitSubtract(mask: Int): Int = and(mask.inv())
 
 //// Collections & Maps
 
-fun Iterable<Nat8>.toArray(n: Cnt): IntArray {
-  val buffer = IntArray(n)
+fun Iterable<Nat8>.toArray(n: Cnt): Nat8Buffer {
+  val buffer = Nat8Buffer(n)
   for ((i, b) in this.withIndex()) buffer[i] = b
   return buffer
 }

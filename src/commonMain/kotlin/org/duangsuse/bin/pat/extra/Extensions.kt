@@ -32,15 +32,17 @@ infix fun <A, B> Pattern<A>.contextual(body: (A) -> Pattern<B>) = Contextual(thi
 /** Pseudo pattern, specify known constants not related to actual data stream
  *
  * This pattern __WILL NOT__ modify actual data stream */
-fun <T> T.statically() = object: Pattern.Sized<T> {
+fun <T> T.statically() = object: Pattern.StaticallySized<T> {
   override fun read(s: Reader): T = this@statically
   override fun write(s: Writer, x: T) {}
-  override fun writeSize(x: T): Cnt = 0
   override val size: Cnt = 0
 }
 
+/** [IllegalStateException] will be thrown when magic value mismatch */
 infix fun <T> Pattern<T>.magic(value: T) = magic(value) { error("Unknown magic <$it>") }
-infix fun Pattern<Int>.padding(n: Int) = converted({ it + n }, { it - n })
+
+/** Add a padding value to actual int got */
+infix fun Pattern<Int>.padding(k: Int) = converted({ it + k }, { it - k })
 
 fun <BIT_FL: BitFlags> ((Int32) -> BIT_FL).bitFlags() = object: ConvertedPattern<Int32, BIT_FL>(int32) {
   override fun from(src: Int32): BIT_FL = this@bitFlags(src)

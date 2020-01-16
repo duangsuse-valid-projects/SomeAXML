@@ -8,7 +8,7 @@ import kotlin.reflect.KProperty
 
 /** Tuple is an array-like object with `val (x0, x1) = (tup)` destruct and index access support
  *
- * + tuple items are stored in array [items], since Kotlin does not support reified type parameters in class,
+ * + __tuple items__ are stored in array [items], since Kotlin does not support reified type parameters in class,
  * __it should be overridden and created in subclasses using [size]__
  * + named indices using first-class delegation [Index] are supported, declare them using `var name: Type by index(idx)`
  * + destruct component 1..4 are provided, see [Tuple.component1]

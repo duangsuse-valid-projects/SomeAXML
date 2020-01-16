@@ -13,8 +13,9 @@ expect interface Closeable { fun close() }
 
 class StreamEnd: Exception("unexpected EOF")
 
-//// Low-level IO stream like java.io.InputStream
+//// Low-level IO stream defined like java.io.InputStream
 interface Nat8Reader: Estimable {
+  /** NOTE: (-1) return value denotes EOF reached */
   fun read(): Nat8
   fun readTo(buffer: Buffer, indices: IdxRange)
 }
