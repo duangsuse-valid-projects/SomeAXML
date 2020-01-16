@@ -1,8 +1,8 @@
 package org.duangsuse.bin.pat
 
 import org.duangsuse.bin.type.Buffer
-import org.duangsuse.bin.Reader
-import org.duangsuse.bin.Writer
+import org.duangsuse.bin.io.Reader
+import org.duangsuse.bin.io.BufferWriter
 import kotlin.test.Test
 
 abstract class AbstractJavaClassTests(private val s: Reader) {
@@ -15,10 +15,11 @@ abstract class AbstractJavaClassTests(private val s: Reader) {
     compileFName.value = "元组.kt"
     ClassFile.write(newFile, kFile) // TODO byte buffer writer for JVM
     println(newFile)
+    val newFileReader = newFile.byteArray().reader()
     val newKFile = ClassFile.read(newFileReader)
     println(newKFile.constants.joinToString("\n"))
   }
-  abstract val newFile: Writer
-  abstract val newFileReader: Reader
+  abstract val newFile: BufferWriter
   abstract val fileBytes: Buffer
+  abstract fun Buffer.reader(): Reader
 }
