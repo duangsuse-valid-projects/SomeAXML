@@ -1,6 +1,8 @@
 package org.duangsuse.bin.pat.extra
 
 import org.duangsuse.bin.*
+import org.duangsuse.bin.pat.BitFlags
+import org.duangsuse.bin.pat.BitFlags32Creator
 import org.duangsuse.bin.pat.Tuple2
 import org.duangsuse.bin.pat.Pattern
 
@@ -61,6 +63,12 @@ open class Contextual<A, B>(private val head: Pattern<A>, private val body: (A) 
     head.write(s, dataDep)
     body(dataDep).write(s, state)
   }
+}
+
+class BitFlags32Of<BIT_FL: BitFlags>(private val creator: BitFlags32Creator<BIT_FL>): Pattern.Sized<BIT_FL> {
+  override fun read(s: Reader): BIT_FL = creator(s.readInt32())
+  override fun write(s: Writer, x: BIT_FL): Unit = s.writeInt32(x.toInt())
+  override val size: Cnt = Int32.SIZE_BYTES
 }
 
 /** [IllegalStateException] will be thrown when called */

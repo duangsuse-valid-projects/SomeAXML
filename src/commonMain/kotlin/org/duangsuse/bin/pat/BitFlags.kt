@@ -17,6 +17,8 @@ interface BitFlags {
   }
 }
 
+typealias BitFlags32Creator<BIT_FL> = (Int32) -> BIT_FL
+
 open class BitFlags32(private var i: Int32): BitFlags {
   override fun get(index: Idx): Boolean = indexBit(index).and(i) != 0
   override fun set(index: Idx, value: Boolean) {
