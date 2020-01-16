@@ -1,8 +1,8 @@
 package org.duangsuse.bin.io
 
-import org.duangsuse.bin.Buffer
 import org.duangsuse.bin.Writer
 import org.duangsuse.bin.makeLittleEndian
+import org.duangsuse.bin.type.Buffer
 import org.duangsuse.bin.writePadding
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -10,7 +10,7 @@ import kotlin.test.assertEquals
 abstract class AbstractWriterTests(private val s: Writer) {
   private fun writePart() {
     s.writeInt8(0x7F)
-    s.writePadding(3)
+    s.asNat8Writer().writePadding(3)
     s.writeInt32(0x77BBCCDD)
     s.writeInt64(0x7AFEBABEL)
   }

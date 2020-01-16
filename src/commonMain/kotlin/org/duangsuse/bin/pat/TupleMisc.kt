@@ -1,6 +1,6 @@
 package org.duangsuse.bin.pat
 
-import org.duangsuse.bin.Cnt
+import org.duangsuse.bin.type.Cnt
 import org.duangsuse.bin.indices
 
 /** Creates an object like [Tuple] with given size */

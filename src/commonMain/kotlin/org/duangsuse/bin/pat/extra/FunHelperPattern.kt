@@ -4,6 +4,8 @@ import org.duangsuse.bin.*
 import org.duangsuse.bin.pat.Tuple2
 import org.duangsuse.bin.pat.Pattern
 import org.duangsuse.bin.pat.atom.*
+import org.duangsuse.bin.type.Buffer
+import org.duangsuse.bin.type.Cnt
 
 // atomic helper patterns that should not inherited in like companion objects
 

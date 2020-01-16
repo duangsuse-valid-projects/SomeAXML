@@ -1,5 +1,8 @@
 package org.duangsuse.bin
 
+import org.duangsuse.bin.type.*
+import org.duangsuse.bin.Sized
+
 //// Sized & Idx
 
 inline val Sized.lastIndex: Idx get() = size.dec()
@@ -17,6 +20,9 @@ inline fun <R> Closeable.use(op: Producer<R>): R
   = try { op() } finally { close() }
 
 //// Nat8Reader
+
+fun Nat8Reader.readTo(buffer: Buffer) { readTo(buffer, buffer.indices) }
+fun Nat8Writer.writeFrom(buffer: Buffer) { writeFrom(buffer, buffer.indices) }
 
 fun Nat8Reader.takeByte(n: Cnt): Buffer {
   val buffer = Buffer(n)
@@ -42,11 +48,12 @@ fun ReadControl.makeAligned(n: Cnt) {
 }
 fun Writer.makeAligned(n: Cnt) {
   val chunkPosition = (count % n)
-  if (chunkPosition != 0) writePadding(n - chunkPosition)
+  if (chunkPosition != 0) asNat8Writer().writePadding(n - chunkPosition)
 }
 
-fun DataWriter.writePadding(n: Cnt, x: Nat8 = 0x00) {
-  repeat(n) { writeNat8(x) }
+fun Nat8Writer.writePadding(n: Cnt, x: Byte = 0x00) {
+  val padding = Buffer(n) {x}
+  writeFrom(padding)
 }
 
 fun ByteOrdered.makeBigEndian() { byteOrder = ByteOrder.BigEndian }

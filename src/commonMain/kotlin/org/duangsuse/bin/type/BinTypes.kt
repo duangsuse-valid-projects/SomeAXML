@@ -1,4 +1,4 @@
-package org.duangsuse.bin
+package org.duangsuse.bin.type
 
 /** Natural number, Reference to JDK 's InputStream */
 typealias Nat8 = Int
@@ -15,6 +15,7 @@ typealias Rat32 = Float
 typealias Rat64 = Double
 
 typealias Buffer = ByteArray
+typealias Nat8Buffer = IntArray
 
 typealias Idx = Int
 typealias IdxRange = IntRange

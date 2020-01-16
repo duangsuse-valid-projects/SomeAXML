@@ -6,6 +6,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFails
 import org.duangsuse.bin.io.assertArrayEquals
+import org.duangsuse.bin.type.Buffer
 
 private val testBin: InputStream get() = InStreamByteReaderTests::class.java.getResourceAsStream("test_binary")
 class InStreamByteReaderTests {

@@ -1,10 +1,9 @@
 package org.duangsuse.bin.pat.extra
 
 import org.duangsuse.bin.*
-import org.duangsuse.bin.pat.BitFlags
-import org.duangsuse.bin.pat.BitFlags32Creator
 import org.duangsuse.bin.pat.Tuple2
 import org.duangsuse.bin.pat.Pattern
+import org.duangsuse.bin.type.Cnt
 
 /** Make stream aligned when read(pre)/write(post)
  *
@@ -14,12 +13,6 @@ import org.duangsuse.bin.pat.Pattern
 class Aligned<T>(private val alignment: Cnt, item: Pattern<T>): PrePost<T>(item) {
   override fun onReadPre(s: Reader) { s.makeAligned(alignment) }
   override fun onWritePost(s: Writer) { s.makeAligned(alignment) }
-}
-
-class BitFlags32Of<BIT_FL: BitFlags>(private val creator: BitFlags32Creator<BIT_FL>): Pattern.StaticallySized<BIT_FL> {
-  override fun read(s: Reader): BIT_FL = creator(s.readInt32())
-  override fun write(s: Writer, x: BIT_FL): Unit = s.writeInt32(x.toInt())
-  override val size: Cnt = Int32.SIZE_BYTES
 }
 
 /** Some complex pattern that have sub-patterns depend on actual data stream */

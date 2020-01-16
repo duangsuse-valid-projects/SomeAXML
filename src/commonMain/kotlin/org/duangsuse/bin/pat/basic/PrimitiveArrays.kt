@@ -3,6 +3,7 @@ package org.duangsuse.bin.pat.basic
 import org.duangsuse.bin.*
 import org.duangsuse.bin.pat.Pattern
 import org.duangsuse.bin.pat.atom.*
+import org.duangsuse.bin.type.Cnt
 
 inline fun <reified T> Pattern<T>.primitiveArray(sizer: Pattern<Cnt>, init: T): Pattern<Array<T>>
   = object: Pattern<Array<T>> {

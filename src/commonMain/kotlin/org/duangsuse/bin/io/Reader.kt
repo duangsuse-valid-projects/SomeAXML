@@ -1,6 +1,7 @@
 package org.duangsuse.bin.io
 
 import org.duangsuse.bin.*
+import org.duangsuse.bin.type.*
 import org.duangsuse.bin.io.Swap.swap
 
 class Reader(private val r: Nat8Reader): org.duangsuse.bin.Reader {

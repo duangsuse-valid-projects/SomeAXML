@@ -1,10 +1,19 @@
 package org.duangsuse.bin
 
+import org.duangsuse.bin.type.*
+
 /** Something like stream with [estimate] and [skip] subtracts it */
 interface Estimable {
-  val estimate: Cnt
-  fun skip(n: Cnt)
+  val estimate: Cnt; fun skip(n: Cnt)
 }
+
+interface MarkReset { fun mark() fun reset() }
+expect interface Flushable { fun flush() }
+expect interface Closeable { fun close() }
+
+class StreamEnd: Exception("unexpected EOF")
+
+//// Low-level IO stream like java.io.InputStream
 interface Nat8Reader: Estimable {
   fun read(): Nat8
   fun readTo(buffer: Buffer, indices: IdxRange)
@@ -14,9 +23,7 @@ interface Nat8Writer {
   fun writeFrom(buffer: Buffer, indices: IdxRange)
 }
 
-fun Nat8Reader.readTo(buffer: Buffer) { readTo(buffer, buffer.indices) }
-fun Nat8Writer.writeFrom(buffer: Buffer) { writeFrom(buffer, buffer.indices) }
-
+//// High-level data IO stream, with controls
 interface Reader: ReadControl, DataReader {
   fun asNat8Reader(): Nat8Reader
 }
@@ -24,23 +31,19 @@ interface Writer: WriteControl, DataWriter {
   fun asNat8Writer(): Nat8Writer
 }
 
-interface MarkReset {
-  fun mark() fun reset()
-}
-expect interface Flushable {
-  fun flush()
-}
-expect interface Closeable {
-  fun close()
-}
-class StreamEnd: Exception("unexpected EOF")
-
 interface ReadControl: Estimable, MarkReset, Closeable {
   val position: Cnt
 }
 interface WriteControl: Flushable, Closeable {
   val count: Cnt
 }
+
+//// ByteOrder and data IO interface
+enum class ByteOrder { BigEndian, LittleEndian }
+interface ByteOrdered { var byteOrder: ByteOrder }
+
+expect val nativeOrder: ByteOrder
+val LANGUAGE_ORDER = ByteOrder.BigEndian
 
 interface DataReader: ByteOrdered {
   fun readNat8():Nat8
@@ -55,15 +58,7 @@ interface DataWriter: ByteOrdered {
   fun writeRat32(x:Rat32) fun writeRat64(x:Rat64)
 }
 
-enum class ByteOrder {
-  BigEndian, LittleEndian
-}
-interface ByteOrdered {
-  var byteOrder: ByteOrder
-}
-expect val nativeOrder: ByteOrder
-val LANGUAGE_ORDER = ByteOrder.BigEndian
-
+//// Sizing Types
 interface OptionalSized {
   val size: Cnt?
 }

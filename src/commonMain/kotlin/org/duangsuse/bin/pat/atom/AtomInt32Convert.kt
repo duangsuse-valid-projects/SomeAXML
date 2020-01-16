@@ -1,7 +1,7 @@
 package org.duangsuse.bin.pat.atom
 
-import org.duangsuse.bin.*
 import org.duangsuse.bin.pat.Pattern
+import org.duangsuse.bin.type.*
 
 abstract class Int32ConvertedPattern<T>(source: Pattern<T>): ConvertedPattern<T, Int32>(source)
 

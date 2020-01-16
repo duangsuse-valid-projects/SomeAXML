@@ -1,8 +1,8 @@
 package org.duangsuse.bin.pat
 
-import org.duangsuse.bin.Cnt
 import org.duangsuse.bin.Reader
 import org.duangsuse.bin.Writer
+import org.duangsuse.bin.type.Cnt
 import org.duangsuse.bin.OptionalSized
 import org.duangsuse.bin.Sized as ExactlySized
 

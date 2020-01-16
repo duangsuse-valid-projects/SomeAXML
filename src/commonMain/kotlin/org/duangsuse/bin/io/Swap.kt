@@ -1,6 +1,6 @@
 package org.duangsuse.bin.io
 
-import org.duangsuse.bin.*
+import org.duangsuse.bin.type.*
 
 /** Functions that rotates integral byte order */
 object Swap {

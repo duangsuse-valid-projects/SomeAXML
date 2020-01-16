@@ -1,5 +1,6 @@
 package org.duangsuse.bin
 
+import org.duangsuse.bin.type.Cnt
 import java.io.InputStream
 import java.io.OutputStream
 import java.io.File

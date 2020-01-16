@@ -1,7 +1,7 @@
 package org.duangsuse.bin.io
 
-import org.duangsuse.bin.Buffer
 import org.duangsuse.bin.byteWriter
+import org.duangsuse.bin.type.Buffer
 import java.io.ByteArrayOutputStream
 
 class WriterTests private constructor(private val outs: ByteArrayOutputStream)

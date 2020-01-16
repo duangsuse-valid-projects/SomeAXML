@@ -1,6 +1,7 @@
 package org.duangsuse.bin.io
 
 import org.duangsuse.bin.*
+import org.duangsuse.bin.type.*
 
 class Writer(private val w: Nat8Writer): org.duangsuse.bin.Writer {
   override var byteOrder: ByteOrder = LANGUAGE_ORDER

@@ -1,6 +1,6 @@
 package org.duangsuse.bin.pat
 
-import org.duangsuse.bin.Buffer
+import org.duangsuse.bin.type.Buffer
 import org.duangsuse.bin.Reader
 import org.duangsuse.bin.Writer
 import kotlin.test.Test

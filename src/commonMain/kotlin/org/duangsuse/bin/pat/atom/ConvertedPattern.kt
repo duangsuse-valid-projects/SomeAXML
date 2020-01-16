@@ -1,9 +1,9 @@
 package org.duangsuse.bin.pat.atom
 
-import org.duangsuse.bin.Cnt
 import org.duangsuse.bin.Reader
 import org.duangsuse.bin.Writer
 import org.duangsuse.bin.pat.Pattern
+import org.duangsuse.bin.type.Cnt
 
 /** Converting pattern between [T] read, [T1] actual */
 abstract class ConvertedPattern<T, T1>(private val source: Pattern<T>): Pattern.BySized<T1>(source) {

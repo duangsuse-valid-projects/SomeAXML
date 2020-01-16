@@ -1,15 +1,13 @@
 package org.duangsuse.bin.pat.extra
 
-import org.duangsuse.bin.Cnt
-import org.duangsuse.bin.Idx
-import org.duangsuse.bin.Reader
-import org.duangsuse.bin.Writer
-import org.duangsuse.bin.pat.BitFlags
-import org.duangsuse.bin.pat.BitFlags32Creator
+import org.duangsuse.bin.*
+import org.duangsuse.bin.bitflag.BitFlags
 import org.duangsuse.bin.pat.Pattern
 import org.duangsuse.bin.pat.atom.ConvertedPattern
+import org.duangsuse.bin.pat.atom.int32
 import org.duangsuse.bin.pat.basic.Cond
 import org.duangsuse.bin.pat.basic.Repeat
+import org.duangsuse.bin.type.*
 
 //// basic patterns
 
@@ -27,7 +25,6 @@ fun <T> Pattern<T>.littleEndian() = EndianSwitch.LittleEndian(this)
 fun <T> Pattern<T>.bigEndian() = EndianSwitch.BigEndian(this)
 
 fun <T> Pattern<T>.aligned(n: Cnt) = Aligned(n, this)
-fun <BIT_FL: BitFlags> BitFlags32Creator<BIT_FL>.bitFlags32() = BitFlags32Of(this)
 infix fun <A, B> Pattern<A>.contextual(body: (A) -> Pattern<B>) = Contextual(this, body)
 
 //// Pattern extensions
@@ -44,3 +41,8 @@ fun <T> T.statically() = object: Pattern.Sized<T> {
 
 infix fun <T> Pattern<T>.magic(value: T) = magic(value) { error("Unknown magic <$it>") }
 infix fun Pattern<Int>.padding(n: Int) = converted({ it + n }, { it - n })
+
+fun <BIT_FL: BitFlags> ((Int32) -> BIT_FL).bitFlags() = object: ConvertedPattern<Int32, BIT_FL>(int32) {
+  override fun from(src: Int32): BIT_FL = this@bitFlags(src)
+  override fun to(x: BIT_FL): Int32 = x.toInt()
+}

@@ -1,5 +1,7 @@
 package org.duangsuse.bin.pat
 
+import org.duangsuse.bin.bitflag.BitFlags
+import org.duangsuse.bin.bitflag.BitFlags32
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

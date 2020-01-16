@@ -1,10 +1,10 @@
 package org.duangsuse.bin.pat
 
-import org.duangsuse.bin.Buffer
 import org.duangsuse.bin.io.Writer
 import org.duangsuse.bin.io.Reader
 import org.duangsuse.bin.byteReader
 import org.duangsuse.bin.byteWriter
+import org.duangsuse.bin.type.Buffer
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
 

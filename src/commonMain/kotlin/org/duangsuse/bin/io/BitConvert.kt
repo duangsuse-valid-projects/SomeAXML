@@ -1,4 +1,7 @@
-package org.duangsuse.bin
+package org.duangsuse.bin.io
+
+import org.duangsuse.bin.type.Cnt
+import org.duangsuse.bin.type.Nat8
 
 typealias Shift<I> = I.(Cnt) -> I
 typealias Nat8Select<I> = I.(I) -> Nat8

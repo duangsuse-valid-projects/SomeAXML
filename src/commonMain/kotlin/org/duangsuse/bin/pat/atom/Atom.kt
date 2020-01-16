@@ -1,7 +1,9 @@
 package org.duangsuse.bin.pat.atom
 
-import org.duangsuse.bin.*
+import org.duangsuse.bin.Reader
+import org.duangsuse.bin.Writer
 import org.duangsuse.bin.pat.Pattern.StaticallySized
+import org.duangsuse.bin.type.*
 import org.duangsuse.bin.uExt
 
 val nat8 = object: StaticallySized<Nat8> {

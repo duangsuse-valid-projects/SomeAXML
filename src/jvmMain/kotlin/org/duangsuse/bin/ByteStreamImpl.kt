@@ -1,5 +1,9 @@
 package org.duangsuse.bin
 
+import org.duangsuse.bin.type.Buffer
+import org.duangsuse.bin.type.Cnt
+import org.duangsuse.bin.type.IdxRange
+import org.duangsuse.bin.type.Nat8
 import java.io.InputStream
 import java.io.OutputStream
 

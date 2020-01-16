@@ -1,11 +1,9 @@
-package org.duangsuse.bin.pat
+package org.duangsuse.bin.bitflag
 
-import org.duangsuse.bin.Idx
-import org.duangsuse.bin.Int32
 import org.duangsuse.bin.bitSubtract
 import org.duangsuse.bin.bitUnion
-
-typealias BitFlags32Creator<BIT_FL> = (Int32) -> BIT_FL
+import org.duangsuse.bin.type.Idx
+import org.duangsuse.bin.type.Int32
 
 open class BitFlags32(private var i: Int32): BitFlags {
   override fun get(index: Idx): Boolean = indexBit(index).and(i) != 0

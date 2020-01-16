@@ -4,6 +4,10 @@ import org.duangsuse.bin.*
 import org.duangsuse.bin.pat.Allocator
 import org.duangsuse.bin.pat.Pattern
 import org.duangsuse.bin.pat.Tuple
+import org.duangsuse.bin.type.Cnt
+import org.duangsuse.bin.type.Idx
+import org.duangsuse.bin.OptionalSized
+import org.duangsuse.bin.type.Producer
 
 /** Sequential binary pattern like C's `struct` */
 open class Seq<TUP: Tuple<T>, T>(private val allocator: Allocator<TUP>, private vararg val items: Pattern<T>): Pattern.Sized<TUP> {

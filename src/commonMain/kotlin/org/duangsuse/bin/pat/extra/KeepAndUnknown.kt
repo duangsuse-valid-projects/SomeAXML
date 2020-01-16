@@ -2,6 +2,7 @@ package org.duangsuse.bin.pat.extra
 
 import org.duangsuse.bin.*
 import org.duangsuse.bin.pat.Pattern
+import org.duangsuse.bin.type.Cnt
 
 /** Keep original array for __ALL BYTES REST__ in stream, may used for partial data extracting */
 object Keep: Pattern<ByteArray> {

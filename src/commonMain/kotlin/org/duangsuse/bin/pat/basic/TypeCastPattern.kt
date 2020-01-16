@@ -3,6 +3,7 @@ package org.duangsuse.bin.pat.basic
 import org.duangsuse.bin.*
 import org.duangsuse.bin.pat.Pattern
 import org.duangsuse.bin.pat.Tuple
+import org.duangsuse.bin.type.*
 import kotlin.reflect.KProperty
 
 open class AnyTuple(size: Cnt)
