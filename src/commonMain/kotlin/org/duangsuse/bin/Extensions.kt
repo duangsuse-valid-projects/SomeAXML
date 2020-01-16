@@ -82,6 +82,7 @@ fun Iterable<Nat8>.toArray(n: Cnt): Nat8Buffer {
 
 internal fun <E> MutableList<E>.removeLast(): E = removeAt(lastIndex)
 internal fun <K, V> Map<K, V>.reverseMap(): Map<V, K> = keys.map { k -> getValue(k) to k }.toMap()
+internal fun <K, V> Iterable<V>.mapBy(key: (V) -> K): Map<K, V> = map { key(it) to it }.toMap()
 
 internal inline fun <reified T> Collection<*>.takeIfAllIsInstance(): List<T>?
   = filterIsInstance<T>().takeIf { it.size == this.size }

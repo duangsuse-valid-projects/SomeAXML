@@ -17,7 +17,7 @@ fun <T, T1> Pattern<T>.converted(from: (T) -> T1, to: (T1) -> T) = object: Conve
 }
 
 infix fun <T: Any> Pattern<Cnt>.sizedRepeat(item: Pattern<T>) = Repeat(this, item)
-fun <T> Pattern<Idx>.cond(vararg conditions: Pattern<T>) = Cond(this, *conditions)
+fun <TAG, E> Pattern<TAG>.cond(vararg conditions: Cond.Case<TAG, E>) = Cond(this, *conditions)
 
 //// HelperPattern
 

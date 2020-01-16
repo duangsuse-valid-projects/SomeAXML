@@ -5,7 +5,6 @@ import org.duangsuse.bin.pat.Allocator
 import org.duangsuse.bin.pat.Pattern
 import org.duangsuse.bin.pat.Tuple
 import org.duangsuse.bin.type.Cnt
-import org.duangsuse.bin.type.Idx
 import org.duangsuse.bin.OptionalSized
 import org.duangsuse.bin.type.Producer
 
@@ -28,6 +27,9 @@ open class Seq<TUP: Tuple<T>, T>(private val allocator: Allocator<TUP>, private 
       ?.sum()
 }
 
+// TODO replace fake Array<T> with abstract items array, combine with primitiveArray
+// TODO open fun postprocessing for created item
+
 /** Repeat of one substructure [item], with size depending on actual data stream [sizer] */
 open class Repeat<T: Any>(private val sizer: Pattern<Cnt>, private val item: Pattern<T>): Pattern<Array<T>> {
   override fun read(s: Reader): Array<T> {
@@ -43,22 +45,30 @@ open class Repeat<T: Any>(private val sizer: Pattern<Cnt>, private val item: Pat
   override fun writeSize(x: Array<T>): Cnt = sizer.writeSize(x.size) + x.map(item::writeSize).sum()
 }
 
-/** Conditional sub-patterns [conditions] like C's `union` can be decided depending on actual data stream with [flag] */
-open class Cond<T>(private val flag: Pattern<Idx>, private vararg val conditions: Pattern<T>): Pattern.Sized<Pair<Idx, T>> {
-  override fun read(s: Reader): Pair<Idx, T> {
-    val caseNo = flag.read(s)
-    return Pair(caseNo, conditions[caseNo].read(s))
+/** Conditional sub-patterns like C's tagged `union`, decided on actual data stream with [tag] */
+open class Cond<TAG, E>(private val tag: Pattern<TAG>, private vararg val conditions: Case<TAG, E>)
+  : Pattern.Sized<Cond.TagItem<TAG, E>> {
+  interface Tagged<out TAG> { val tag: TAG }
+  interface Case<out TAG, out E>: Tagged<TAG>, Pattern<@kotlin.UnsafeVariance E> // for TagItem
+  data class TagItem<out TAG, out E>(override val tag: TAG, val item: E): Tagged<TAG> {
+    override fun toString(): String = "$item#$tag"
   }
-  override fun write(s: Writer, x: Pair<Idx, T>) {
-    val (caseNo, state) = x
-    flag.write(s, caseNo)
-    conditions[caseNo].write(s, state)
+  private val tagMap = conditions.asIterable().mapBy(Tagged<TAG>::tag)
+  override fun read(s: Reader): TagItem<TAG, E> {
+    val caseTag = tag.read(s)
+    val case = tagMap[caseTag] ?: error("unknown case tag $caseTag")
+    return TagItem(caseTag, case.read(s))
   }
-  override fun writeSize(x: Pair<Idx, T>): Cnt = conditions[x.first].writeSize(x.second)
+  override fun write(s: Writer, x: TagItem<TAG, E>) {
+    tag.write(s, x.tag)
+    val case = tagMap.getValue(x.tag)
+    case.write(s, x.item)
+  }
+  override fun writeSize(x: TagItem<TAG, E>): Cnt = tagMap.getValue(x.tag).writeSize(x.item)
   /** byte size can be unified when all [conditions] has same static size */
   override val size: Cnt?
     get() = conditions.toList()
-      .takeIfAllIsInstance<Pattern.Sized<T>>()
+      .takeIfAllIsInstance<Pattern.Sized<E>>()
       ?.mapTakeIfAllNotNull(OptionalSized::size)
       ?.toSet()?.singleOrNull()
 }

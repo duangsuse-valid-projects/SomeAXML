@@ -14,7 +14,10 @@ open class AnyTuple(size: Cnt)
 
 open class AnySeq<TUP: Tuple<Any>>(creator: Producer<TUP>, vararg items: Pattern<Any>): Seq<TUP, Any>(creator, *items)
 open class AnyRepeat(sizer: Pattern<Cnt>, item: Pattern<Any>): Repeat<Any>(sizer, item)
-open class AnyCond(flag: Pattern<Idx>, vararg conditions: Pattern<Any>): Cond<Any>(flag, *conditions)
+open class AnyCond(flag: Pattern<Idx>, vararg conditions: Case<Idx, Any>): Cond<Idx, Any>(flag, *conditions)
+open class CondByIdx<T>(flag: Pattern<Idx>, vararg conditions: Case<Idx, T>): Cond<Idx, T>(flag, *conditions)
+abstract class TagAnySeq<TAG, TUP: AnyTuple>(override val tag: TAG,
+  creator: Producer<TUP>, vararg items: Pattern<Any>): AnySeq<TUP>(creator, *items), Cond.Case<TAG, TUP>
 
 class CastIndex<T>(private val idx: Idx) {
   @Suppress("UNCHECKED_CAST")
