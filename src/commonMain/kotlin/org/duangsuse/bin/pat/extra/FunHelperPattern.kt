@@ -34,6 +34,11 @@ fun <T> Pattern<T>.offset(n: Cnt) = object: Pattern.Sized<Tuple2<Buffer, T>> {
   override val size: Cnt? get() = (this@offset as? Pattern.Sized)?.size?.plus(n)
 }
 
+/**
+ * NOTE: Kotlin 1.3.41 __WILL NOT__ inline [defaultValue] call in [init] __causing intrinsics exception in runtime, that's a bug__
+ *
+ * Easiest workaround: __specify [init] directly__
+ */
 inline fun <reified T> Pattern<T>.primitiveArray(sizer: Pattern<Cnt>, init: T = defaultValue()): Pattern<Array<T>>
   = object: Pattern<Array<T>> {
   override fun read(s: Reader): Array<T> {
