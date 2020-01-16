@@ -10,16 +10,16 @@ import org.duangsuse.bin.pat.extra.ZeroValues.double
 
 /** Try for boolean,byte,short,char,int,long,float,double,reference primitives */
 @PublishedApi internal inline fun <reified T> defaultValue(): T = when {
-  boolean is T -> boolean
-  byte is T -> byte
-  short is T -> short
-  int is T -> int
-  long is T -> long
-  float is T -> float
-  double is T -> double
-  null is T -> null
+  boolean is T -> boolean as T
+  byte is T -> byte as T
+  short is T -> short as T
+  int is T -> int as T
+  long is T -> long as T
+  float is T -> float as T
+  double is T -> double as T
+  null is T -> null as T
   else -> error("Unsupported ${T::class}, specify initiate explicitly")
-} as T
+}
 
 @PublishedApi internal object ZeroValues {
   const val boolean = false
