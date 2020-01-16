@@ -16,6 +16,7 @@ open class Seq<TUP: Tuple<T>, T>(private val allocator: Allocator<TUP>, private 
   override fun write(s: Writer, x: TUP) {
     for ((index, item) in items.withIndex()) item.write(s, x[index])
   }
+  override fun writeSize(x: TUP): Cnt = items.zip(x.toArray()).map { it.first.writeSize(it.second) }.sum()
   override val size: Cnt?
     get() = items.toList()
       .takeIfAllIsInstance<Pattern.Sized<T>>()
@@ -34,6 +35,7 @@ open class Repeat<T: Any>(private val sizer: Pattern<Cnt>, private val item: Pat
     sizer.write(s, x.size)
     for (element in x) item.write(s, element)
   }
+  override fun writeSize(x: Array<T>): Cnt = sizer.writeSize(x.size) + x.map(item::writeSize).sum()
 }
 /** Conditional sub-patterns [conditions] like C's `union` can be decided depending on actual data stream with [flag] */
 open class Cond<T>(private val flag: Pattern<Idx>, private vararg val conditions: Pattern<T>): Pattern.Sized<Pair<Idx, T>> {
@@ -46,6 +48,7 @@ open class Cond<T>(private val flag: Pattern<Idx>, private vararg val conditions
     flag.write(s, caseNo)
     conditions[caseNo].write(s, state)
   }
+  override fun writeSize(x: Pair<Idx, T>): Cnt = conditions[x.first].writeSize(x.second)
   /** byte size can be unified when all [conditions] has same static size */
   override val size: Cnt?
     get() = conditions.toList()

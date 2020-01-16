@@ -6,6 +6,7 @@ import org.duangsuse.bin.pat.Pattern
 abstract class Int32ConvertPattern<T>(private val source: Pattern<T>): Pattern.BySized<Int32>(source) {
   override fun read(s: Reader): Int32 = toInt(source.read(s))
   override fun write(s: Writer, x: Int32) = source.write(s, fromInt(x))
+  override fun writeSize(x: Int32): Cnt = source.writeSize(fromInt(x))
   protected abstract fun toInt(src: T): Int32
   protected abstract fun fromInt(x: Int32): T
 }

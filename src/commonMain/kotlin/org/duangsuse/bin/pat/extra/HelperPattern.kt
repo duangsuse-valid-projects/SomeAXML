@@ -7,7 +7,7 @@ import org.duangsuse.bin.pat.Tuple2
 import org.duangsuse.bin.pat.Pattern
 
 /** Add argument/return listen for [Pattern] read/write */
-abstract class PrePost<T>(private val item: Pattern<T>): Pattern.BySized<T>(item) {
+abstract class PrePost<T>(private val item: Pattern<T>): Pattern.BySizedFully<T>(item) {
   override fun read(s: Reader): T {
     onReadPre(s)
     return item.read(s).also { onReadPost(s, it) }
@@ -16,6 +16,7 @@ abstract class PrePost<T>(private val item: Pattern<T>): Pattern.BySized<T>(item
     onWritePre(s, x)
     item.write(s, x).also { onWritePost(s) }
   }
+
   open fun onReadPre(s: Reader) {}
   open fun onReadPost(s: Reader, result: T) {}
   open fun onWritePre(s: Writer, x: T) {}
@@ -45,7 +46,11 @@ open class EndianSwitch<T>(item: Pattern<T>, private val newEndian: ByteOrder): 
   open class LittleEndian<T>(item: Pattern<T>): EndianSwitch<T>(item, ByteOrder.LittleEndian)
 }
 
-/** Make stream aligned when read(pre)/write(post) */
+/** Make stream aligned when read(pre)/write(post)
+ *
+ * Since alignments are just zero-padding, they are ignored in data storage
+ *
+ * __WARN__: Using this pattern __WILL BREAK__ [Pattern.writeSize] */
 class Aligned<T>(private val alignment: Cnt, item: Pattern<T>): PrePost<T>(item) {
   override fun onReadPre(s: Reader) { s.makeAligned(alignment) }
   override fun onWritePost(s: Writer) { s.makeAligned(alignment) }
@@ -62,9 +67,13 @@ open class Contextual<A, B>(private val head: Pattern<A>, private val body: (A) 
     head.write(s, dataDep)
     body(dataDep).write(s, state)
   }
+  override fun writeSize(x: Tuple2<A, B>): Cnt {
+    val (dataDep, state) = x
+    return head.writeSize(dataDep) + body(dataDep).writeSize(state)
+  }
 }
 
-class BitFlags32Of<BIT_FL: BitFlags>(private val creator: BitFlags32Creator<BIT_FL>): Pattern.Sized<BIT_FL> {
+class BitFlags32Of<BIT_FL: BitFlags>(private val creator: BitFlags32Creator<BIT_FL>): Pattern.StaticallySized<BIT_FL> {
   override fun read(s: Reader): BIT_FL = creator(s.readInt32())
   override fun write(s: Writer, x: BIT_FL): Unit = s.writeInt32(x.toInt())
   override val size: Cnt = Int32.SIZE_BYTES
@@ -74,14 +83,17 @@ class BitFlags32Of<BIT_FL: BitFlags>(private val creator: BitFlags32Creator<BIT_
 object Keep: Pattern<ByteArray> {
   override fun read(s: Reader): ByteArray = s.asNat8Reader().takeByte(s.estimate)
   override fun write(s: Writer, x: ByteArray): Unit = s.asNat8Writer().writeFrom(x)
+  override fun writeSize(x: ByteArray): Cnt = x.size
 }
 
 /** [IllegalStateException] will be thrown when called */
 object Unknown: Pattern<Nothing> {
   override fun read(s: Reader): Nothing = error("unknown data part @${s.position}")
   override fun write(s: Writer, x: Nothing) = impossible()
+  override fun writeSize(x: Nothing): Cnt = impossible()
 }
 operator fun Pattern<Nothing>.unaryPlus() = object: Pattern<Any> {
   override fun read(s: Reader): Nothing = this@unaryPlus.read(s)
   override fun write(s: Writer, x: Any) = impossible()
+  override fun writeSize(x: Any): Cnt = impossible()
 }

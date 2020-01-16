@@ -32,6 +32,7 @@ fun <BIT_FL: BitFlags> BitFlags32Creator<BIT_FL>.bitFlags32() = BitFlags32Of(thi
 fun <T> T.statically() = object: Pattern.Sized<T> {
   override fun read(s: Reader): T = this@statically
   override fun write(s: Writer, x: T) {}
+  override fun writeSize(x: T): Cnt = 0
   override val size: Cnt = 0
 }
 

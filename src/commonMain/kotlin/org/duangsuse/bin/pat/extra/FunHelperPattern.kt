@@ -9,13 +9,15 @@ import org.duangsuse.bin.pat.Pattern
 fun <T, T1> Pattern<T>.converted(from: (T) -> T1, to: (T1) -> T) = object: Pattern.BySized<T1>(this) {
   override fun read(s: Reader): T1 = this@converted.read(s).let(from)
   override fun write(s: Writer, x: T1) = this@converted.write(s, x.let(to))
+  override fun writeSize(x: T1): Cnt = this@converted.writeSize(to(x))
 }
 infix fun <T, T1> Pattern<T>.mapped(map: Map<T, T1>) = object: Pattern.BySized<T1>(this) {
   private val revMap = map.reverseMap()
   override fun read(s: Reader): T1 = map.getValue(this@mapped.read(s))
   override fun write(s: Writer, x: T1): Unit = this@mapped.write(s, revMap.getValue(x))
+  override fun writeSize(x: T1): Cnt = this@mapped.writeSize(revMap.getValue(x))
 }
-fun <T> Pattern<T>.magic(value: T, onError: (T) -> Nothing) = object: Pattern.BySized<T>(this) {
+fun <T> Pattern<T>.magic(value: T, onError: (T) -> Nothing) = object: Pattern.BySizedFully<T>(this) {
   override fun read(s: Reader): T = this@magic.read(s).also { if (it != value) onError(it) }
   override fun write(s: Writer, x: T) { this@magic.write(s, x) }
 }
@@ -28,6 +30,7 @@ fun <T> Pattern<T>.offset(n: Cnt) = object: Pattern.BySized<Tuple2<Buffer, T>>(t
     s.asNat8Writer().writeFrom(x.first)
     this@offset.write(s, x.second)
   }
+  override fun writeSize(x: Tuple2<Buffer, T>): Cnt = x.first.size + this@offset.writeSize(x.second)
   override val size: Cnt? get() = super.size?.plus(n)
 }
 
@@ -48,6 +51,7 @@ inline fun <reified T> Pattern<T>.primitiveArray(sizer: Pattern<Cnt>, init: T = 
     sizer.write(s, x.size)
     for (item in x) this@primitiveArray.write(s, item)
   }
+  override fun writeSize(x: Array<T>): Cnt = sizer.writeSize(x.size) + x.map(this@primitiveArray::writeSize).sum()
 }
 fun Pattern<Cnt>.sizedByteArray() = object: Pattern<ByteArray> {
   override fun read(s: Reader): ByteArray {
@@ -58,4 +62,5 @@ fun Pattern<Cnt>.sizedByteArray() = object: Pattern<ByteArray> {
     this@sizedByteArray.write(s, x.size)
     s.asNat8Writer().writeFrom(x)
   }
+  override fun writeSize(x: ByteArray): Cnt = x.size
 }
