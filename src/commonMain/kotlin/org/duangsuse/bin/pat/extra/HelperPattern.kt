@@ -7,7 +7,7 @@ import org.duangsuse.bin.pat.Tuple2
 import org.duangsuse.bin.pat.Pattern
 
 /** Add argument/return listen for [Pattern] read/write */
-abstract class PrePost<T>(private val item: Pattern<T>): Pattern.Sized<T> {
+abstract class PrePost<T>(private val item: Pattern<T>): Pattern.BySized<T>(item) {
   override fun read(s: Reader): T {
     onReadPre(s)
     return item.read(s).also { onReadPost(s, it) }
@@ -20,12 +20,11 @@ abstract class PrePost<T>(private val item: Pattern<T>): Pattern.Sized<T> {
   open fun onReadPost(s: Reader, result: T) {}
   open fun onWritePre(s: Writer, x: T) {}
   open fun onWritePost(s: Writer) {}
-  override val size: Cnt? get() = (item as? Pattern.Sized<T>)?.size
 }
 
 /** Read/write child [item] in byte order of [newEndian], then restore old order.
  *
- * Thread safety is not guaranteed */
+ * NOTE: Thread safety __IS NOT__ guaranteed */
 open class EndianSwitch<T>(item: Pattern<T>, private val newEndian: ByteOrder): PrePost<T>(item) {
   private lateinit var oldByteOrder: ByteOrder
   override fun onReadPre(s: Reader) {
@@ -71,6 +70,12 @@ class BitFlags32Of<BIT_FL: BitFlags>(private val creator: BitFlags32Creator<BIT_
   override val size: Cnt = Int32.SIZE_BYTES
 }
 
+/** Keep original array for __ALL BYTES REST__ in stream, may used for partial data extracting */
+object Keep: Pattern<ByteArray> {
+  override fun read(s: Reader): ByteArray = s.asNat8Reader().takeByte(s.estimate)
+  override fun write(s: Writer, x: ByteArray): Unit = s.asNat8Writer().writeFrom(x)
+}
+
 /** [IllegalStateException] will be thrown when called */
 object Unknown: Pattern<Nothing> {
   override fun read(s: Reader): Nothing = error("unknown data part @${s.position}")
@@ -79,10 +84,4 @@ object Unknown: Pattern<Nothing> {
 operator fun Pattern<Nothing>.unaryPlus() = object: Pattern<Any> {
   override fun read(s: Reader): Nothing = this@unaryPlus.read(s)
   override fun write(s: Writer, x: Any) = impossible()
-}
-
-/** Keep original array for __ALL BYTES REST__ in stream, may used for partial data extracting */
-object Keep: Pattern<ByteArray> {
-  override fun read(s: Reader): ByteArray = s.asNat8Reader().takeByte(s.estimate)
-  override fun write(s: Writer, x: ByteArray): Unit = s.asNat8Writer().writeFrom(x)
 }

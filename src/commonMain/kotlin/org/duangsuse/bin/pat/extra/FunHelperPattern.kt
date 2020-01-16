@@ -6,23 +6,20 @@ import org.duangsuse.bin.pat.Pattern
 
 // atomic helper patterns that should not inherited in like companion objects
 
-fun <T, T1> Pattern<T>.converted(from: (T) -> T1, to: (T1) -> T) = object: Pattern.Sized<T1> {
+fun <T, T1> Pattern<T>.converted(from: (T) -> T1, to: (T1) -> T) = object: Pattern.BySized<T1>(this) {
   override fun read(s: Reader): T1 = this@converted.read(s).let(from)
   override fun write(s: Writer, x: T1) = this@converted.write(s, x.let(to))
-  override val size: Cnt? get() = (this@converted as? Pattern.Sized)?.size
 }
-infix fun <T, T1> Pattern.Sized<T>.mapped(map: Map<T, T1>) = object: Pattern.Sized<T1> {
+infix fun <T, T1> Pattern<T>.mapped(map: Map<T, T1>) = object: Pattern.BySized<T1>(this) {
   private val revMap = map.reverseMap()
   override fun read(s: Reader): T1 = map.getValue(this@mapped.read(s))
   override fun write(s: Writer, x: T1): Unit = this@mapped.write(s, revMap.getValue(x))
-  override val size: Cnt? get() = this@mapped.size
 }
-fun <T> Pattern.Sized<T>.magic(value: T, onError: (T) -> Nothing) = object: Pattern.Sized<T> {
+fun <T> Pattern<T>.magic(value: T, onError: (T) -> Nothing) = object: Pattern.BySized<T>(this) {
   override fun read(s: Reader): T = this@magic.read(s).also { if (it != value) onError(it) }
   override fun write(s: Writer, x: T) { this@magic.write(s, x) }
-  override val size: Cnt? get() = this@magic.size
 }
-fun <T> Pattern<T>.offset(n: Cnt) = object: Pattern.Sized<Tuple2<Buffer, T>> {
+fun <T> Pattern<T>.offset(n: Cnt) = object: Pattern.BySized<Tuple2<Buffer, T>>(this) {
   override fun read(s: Reader): Tuple2<Buffer, T> {
     val savedBuffer = s.asNat8Reader().takeByte(n)
     return Tuple2(savedBuffer, this@offset.read(s))
@@ -31,7 +28,7 @@ fun <T> Pattern<T>.offset(n: Cnt) = object: Pattern.Sized<Tuple2<Buffer, T>> {
     s.asNat8Writer().writeFrom(x.first)
     this@offset.write(s, x.second)
   }
-  override val size: Cnt? get() = (this@offset as? Pattern.Sized)?.size?.plus(n)
+  override val size: Cnt? get() = super.size?.plus(n)
 }
 
 /**

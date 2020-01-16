@@ -35,5 +35,5 @@ fun <T> T.statically() = object: Pattern.Sized<T> {
   override val size: Cnt = 0
 }
 
-infix fun <T> Pattern.Sized<T>.magic(value: T) = magic(value) { error("Unknown magic <$it>") }
-infix fun Pattern<Cnt>.padding(n: Int) = converted({ it + n }, { it - n })
+infix fun <T> Pattern<T>.magic(value: T) = magic(value) { error("Unknown magic <$it>") }
+infix fun Pattern<Int>.padding(n: Int) = converted({ it + n }, { it - n })

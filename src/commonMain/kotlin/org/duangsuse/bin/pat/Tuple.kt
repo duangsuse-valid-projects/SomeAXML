@@ -21,7 +21,7 @@ abstract class Tuple<E>(override val size: Cnt): Sized {
   fun toArray(): Array<E> = items
 
   protected fun <T> index(idx: Idx) = Index<T>(idx)
-  class Index<T>(private val idx: Idx) {
+  protected class Index<T>(private val idx: Idx) {
     operator fun getValue(self: Tuple<out T>, _p: KProperty<*>): T = self[idx]
     operator fun setValue(self: Tuple<in T>, _p: KProperty<*>, value: T) { self[idx] = value }
   }

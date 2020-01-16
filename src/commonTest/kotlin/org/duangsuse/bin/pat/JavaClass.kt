@@ -3,6 +3,7 @@ package org.duangsuse.bin.pat
 import org.duangsuse.bin.*
 import org.duangsuse.bin.pat.atom.*
 import org.duangsuse.bin.pat.basic.*
+import org.duangsuse.bin.pat.basic.CastIndex.Delegate.indexOf
 import org.duangsuse.bin.pat.extra.*
 import org.duangsuse.bin.pat.extra.EndianSwitch.BigEndian
 
