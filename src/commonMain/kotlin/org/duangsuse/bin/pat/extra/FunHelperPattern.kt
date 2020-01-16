@@ -3,6 +3,7 @@ package org.duangsuse.bin.pat.extra
 import org.duangsuse.bin.*
 import org.duangsuse.bin.pat.Tuple2
 import org.duangsuse.bin.pat.Pattern
+import org.duangsuse.bin.pat.atom.*
 
 // atomic helper patterns that should not inherited in like companion objects
 
@@ -34,12 +35,7 @@ fun <T> Pattern<T>.offset(n: Cnt) = object: Pattern.BySized<Tuple2<Buffer, T>>(t
   override val size: Cnt? get() = super.size?.plus(n)
 }
 
-/**
- * NOTE: Kotlin 1.3.41 __WILL NOT__ inline [defaultValue] call in [init] __causing intrinsics exception in runtime, that's a bug__
- *
- * Easiest workaround: __specify [init] directly__
- */
-inline fun <reified T> Pattern<T>.primitiveArray(sizer: Pattern<Cnt>, init: T = defaultValue()): Pattern<Array<T>>
+inline fun <reified T> Pattern<T>.primitiveArray(sizer: Pattern<Cnt>, init: T): Pattern<Array<T>>
   = object: Pattern<Array<T>> {
   override fun read(s: Reader): Array<T> {
     val size = sizer.read(s)
@@ -53,6 +49,16 @@ inline fun <reified T> Pattern<T>.primitiveArray(sizer: Pattern<Cnt>, init: T = 
   }
   override fun writeSize(x: Array<T>): Cnt = sizer.writeSize(x.size) + x.map(this@primitiveArray::writeSize).sum()
 }
+
+fun Pattern<Cnt>.sizedPrimitiveArray(init: Boolean) = bool8.primitiveArray(this, init)
+fun Pattern<Cnt>.sizedPrimitiveArray(init: Byte) = int8.primitiveArray(this, init)
+fun Pattern<Cnt>.sizedPrimitiveArray(init: Short) = int16.primitiveArray(this, init)
+fun Pattern<Cnt>.sizedPrimitiveArray(init: Char) = char16.primitiveArray(this, init)
+fun Pattern<Cnt>.sizedPrimitiveArray(init: Int) = int32.primitiveArray(this, init)
+fun Pattern<Cnt>.sizedPrimitiveArray(init: Long) = int64.primitiveArray(this, init)
+fun Pattern<Cnt>.sizedPrimitiveArray(init: Float) = rat32.primitiveArray(this, init)
+fun Pattern<Cnt>.sizedPrimitiveArray(init: Double) = rat64.primitiveArray(this, init)
+
 fun Pattern<Cnt>.sizedByteArray() = object: Pattern<ByteArray> {
   override fun read(s: Reader): ByteArray {
     val n = this@sizedByteArray.read(s)
