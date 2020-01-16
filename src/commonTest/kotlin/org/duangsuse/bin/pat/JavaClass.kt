@@ -22,7 +22,7 @@ class ClassFile: AnyTuple(4) {
   companion object: BigEndian<ClassFile>(Seq(::ClassFile,
     +(u4 magic 0xcafebabeL),
     +Version,
-    +ConstantInfo.primitiveArray(PAIR_NIL, u2 padding (-1)),
+    +ConstantInfo.primitiveArray(u2 padding (-1), Pair(-1,0)),
     +Keep // TODO implement rest
   ))
   class Version: IntTuple(2) {
@@ -35,7 +35,6 @@ class ClassFile: AnyTuple(4) {
   val version by indexOf<Version>(1)
   val constants by indexOf<Array<Pair<Idx, ConstantInfo>>>(2)
 }
-val PAIR_NIL: Pair<Idx, Any> = Pair(-1, 0)
 
 sealed class ConstantInfo(size: Cnt): AnyTuple(size) {
   companion object: AnyCond(u1,

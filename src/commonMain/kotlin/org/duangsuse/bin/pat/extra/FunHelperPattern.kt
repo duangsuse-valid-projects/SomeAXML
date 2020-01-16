@@ -17,6 +17,11 @@ infix fun <T, T1> Pattern.Sized<T>.mapped(map: Map<T, T1>) = object: Pattern.Siz
   override fun write(s: Writer, x: T1): Unit = this@mapped.write(s, revMap.getValue(x))
   override val size: Cnt? get() = this@mapped.size
 }
+fun <T> Pattern.Sized<T>.magic(value: T, onError: (T) -> Nothing) = object: Pattern.Sized<T> {
+  override fun read(s: Reader): T = this@magic.read(s).also { if (it != value) onError(it) }
+  override fun write(s: Writer, x: T) { this@magic.write(s, x) }
+  override val size: Cnt? get() = this@magic.size
+}
 fun <T> Pattern<T>.offset(n: Cnt) = object: Pattern.Sized<Tuple2<Buffer, T>> {
   override fun read(s: Reader): Tuple2<Buffer, T> {
     val savedBuffer = s.asNat8Reader().takeByte(n)
@@ -28,13 +33,8 @@ fun <T> Pattern<T>.offset(n: Cnt) = object: Pattern.Sized<Tuple2<Buffer, T>> {
   }
   override val size: Cnt? get() = (this@offset as? Pattern.Sized)?.size?.plus(n)
 }
-fun <T> Pattern.Sized<T>.magic(value: T, onError: (T) -> Nothing) = object: Pattern.Sized<T> {
-  override fun read(s: Reader): T = this@magic.read(s).also { if (it != value) onError(it) }
-  override fun write(s: Writer, x: T) { this@magic.write(s, x) }
-  override val size: Cnt? get() = this@magic.size
-}
 
-inline fun <reified T> Pattern<T>.primitiveArray(init: T, sizer: Pattern<Cnt>): Pattern<Array<T>>
+inline fun <reified T> Pattern<T>.primitiveArray(sizer: Pattern<Cnt>, init: T = defaultValue()): Pattern<Array<T>>
   = object: Pattern<Array<T>> {
   override fun read(s: Reader): Array<T> {
     val size = sizer.read(s)

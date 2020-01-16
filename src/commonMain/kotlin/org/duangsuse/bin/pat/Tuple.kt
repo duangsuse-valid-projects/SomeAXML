@@ -4,15 +4,8 @@ import org.duangsuse.bin.Idx
 import org.duangsuse.bin.Cnt
 
 import org.duangsuse.bin.Sized
-import org.duangsuse.bin.indices
 
 import kotlin.reflect.KProperty
-
-/** Creates an object like [Tuple] with given size */
-typealias Allocator<T> = (Cnt) -> T
-
-/** Mutable version of [Pair] */
-data class Tuple2<A, B>(var first: A, var second: B)
 
 /** Tuple is an array-like object with `val (x0, x1) = (tup)` destruct and index access support
  *
@@ -41,9 +34,3 @@ abstract class Tuple<E>(override val size: Cnt): Sized {
   override fun hashCode(): Int  = 31 * size + items.contentHashCode()
   override fun toString(): String = "(${items.joinToString(", ")})"
 }
-operator fun <E> Tuple<E>.component1() = this[0]
-operator fun <E> Tuple<E>.component2() = this[1]
-operator fun <E> Tuple<E>.component3() = this[2]
-operator fun <E> Tuple<E>.component4() = this[3]
-
-fun <E> Tuple<E>.toList(): List<E> = indices.map(this::get)
